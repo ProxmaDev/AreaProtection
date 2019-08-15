@@ -43,7 +43,9 @@ public class AreaProtection extends PluginBase {
     public static String Prefix = "§8» §3AreaProtection §8| §7";
     public static HashMap<Player, Position> firstPoses = new HashMap<>();
     public static HashMap<Player, Position> secondPoses = new HashMap<>();
+    public static HashMap<Player, Integer> playersInPosMode = new HashMap<Player, Integer>();
     public static ArrayList<Area> areas = new ArrayList<>();
+    public static ArrayList<Player> bypassPlayers = new ArrayList<>();
 
     public static AreaProtection instance;
 
@@ -107,8 +109,9 @@ public class AreaProtection extends PluginBase {
             boolean place = (boolean) area.get("place");
             boolean interact = (boolean) area.get("interact");
             boolean pvp = (boolean) area.get("pvp");
+            boolean god = (boolean) area.get("god");
 
-            areas.add(new Area(name, new Vector3(x, y, z), new Vector3(xx, yy, zz), getServer().getLevelByName(world), breakAllowed, place, interact, pvp));
+            areas.add(new Area(name, new Vector3(x, y, z), new Vector3(xx, yy, zz), getServer().getLevelByName(world), breakAllowed, place, interact, pvp, god));
         }
     }
 

@@ -46,6 +46,7 @@ public class AreaManager {
         config.set("areas." + name + ".place", true);
         config.set("areas." + name + ".interact", true);
         config.set("areas." + name + ".pvp", true);
+        config.set("areas." + name + ".god", false);
         config.save();
         config.reload();
         plugin.loadAreas();
@@ -60,7 +61,7 @@ public class AreaManager {
         config.set("areas." + area.getName() + "." + key, value);
         config.save();
         config.reload();
-        plugin.loadAreas();
+        //plugin.loadAreas();
 
         plugin.getLogger().info(AreaProtection.Prefix + "Set " + key + " for " + area.getName() + " to " + value);
     }

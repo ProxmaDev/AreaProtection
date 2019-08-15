@@ -49,13 +49,16 @@ public class AreaProtectionCommand extends CommandManager {
             Player player = (Player) sender;
             if (args.length == 1) {
                 if (args[0].equalsIgnoreCase("pos1")) {
-                    AreaProtection.firstPoses.put(player, player.getPosition());
-                    player.sendMessage("Set 1. position at " + player.getPosition().toString());
+                    //AreaProtection.firstPoses.put(player, player.getPosition());
+                    AreaProtection.playersInPosMode.put(player, 0);
+                    player.sendMessage(AreaProtection.Prefix + "Break or place a block to set 1. Position.");
                     return false;
                 } else if (args[0].equalsIgnoreCase("pos2")) {
-                    AreaProtection.secondPoses.put(player, player.getPosition());
-                    player.sendMessage("Set 2. position at " + player.getPosition().toString());
+                    //AreaProtection.secondPoses.put(player, player.getPosition());
+                    AreaProtection.playersInPosMode.put(player, 1);
+                    player.sendMessage(AreaProtection.Prefix + "Break or place a block to set 2. Position.");
                     return false;
+
                 } else if (args[0].equalsIgnoreCase("list")) {
                     if (AreaProtection.areas.size() == 0) {
                         player.sendMessage(AreaProtection.Prefix + "There are no areas to list.");
@@ -66,15 +69,30 @@ public class AreaProtectionCommand extends CommandManager {
                             list.append(area.getName()).append(", ");
                         }
                         player.sendMessage(AreaProtection.Prefix + "A list of all areas: " + list.toString());
+                        return false;
                     }
+                } else if(args[0].equalsIgnoreCase("bypass")) {
+                    if(AreaProtection.bypassPlayers.contains(player)) {
+                        AreaProtection.bypassPlayers.remove(player);
+                        player.sendMessage(AreaProtection.Prefix + "You're no longer bypassing every restriction.");
+                    } else {
+                        AreaProtection.bypassPlayers.add(player);
+                        player.sendMessage(AreaProtection.Prefix + "You're bypassing every restriction now.");
+                    }
+                    return false;
                 } else {
                     sendUsage(player);
                     return false;
                 }
             } else if (args.length == 2) {
                 if(args[0].equalsIgnoreCase("create")) {
+                    if(!AreaProtection.firstPoses.containsKey(player) || !AreaProtection.secondPoses.containsKey(player)) {
+                        sendUsage(player);
+                        player.sendMessage(AreaProtection.Prefix + "Please set the positions first.");
+                        return false;
+                    }
                     AreaManager.createArea(args[1], AreaProtection.firstPoses.get(player), AreaProtection.secondPoses.get(player), AreaProtection.firstPoses.get(player).getLevel());
-                    player.sendMessage("Area " + args[1] + " created.");
+                    player.sendMessage(AreaProtection.Prefix + "Area " + args[1] + " created.");
                     return false;
                 } else if(args[0].equalsIgnoreCase("goto")) {
                     Area area = plugin.getAreaByName(args[1]);
@@ -88,8 +106,8 @@ public class AreaProtectionCommand extends CommandManager {
                 } else if(args[0].equalsIgnoreCase("info")) {
                     Area area = plugin.getAreaByName(args[1]);
                     if(area != null) {
-                        player.sendMessage(AreaProtection.Prefix + "Information about " + args[1]);
-                        player.sendMessage(AreaProtection.Prefix);
+                        player.sendMessage(AreaProtection.Prefix + "Information about " + args[1] + ":");
+                        player.sendMessage(AreaProtection.Prefix + "----------------------------------");
                         player.sendMessage(AreaProtection.Prefix + "World: " + area.getWorld().getName());
                         player.sendMessage(AreaProtection.Prefix + "1. Position: X: " + area.getPos1().x + ", Y: " + area.getPos1().y + ", Z: " + area.getPos1().z);
                         player.sendMessage(AreaProtection.Prefix + "2. Position: X: " + area.getPos2().x + ", Y: " + area.getPos2().y + ", Z: " + area.getPos2().z);
@@ -97,6 +115,7 @@ public class AreaProtectionCommand extends CommandManager {
                         player.sendMessage(AreaProtection.Prefix + "Place: " + area.isPlaceAllowed());
                         player.sendMessage(AreaProtection.Prefix + "Interact: " + area.isInteractAllowed());
                         player.sendMessage(AreaProtection.Prefix + "PvP: " + area.isPvpAllowed());
+                        player.sendMessage(AreaProtection.Prefix + "God: " + area.isGod());
                         return false;
                     } else {
                         player.sendMessage(AreaProtection.Prefix + "§cCouldn't find area with name " + args[1]);
@@ -122,19 +141,31 @@ public class AreaProtectionCommand extends CommandManager {
                         if(flag.equalsIgnoreCase("break")) {
                             AreaManager.updateFlag(area, "break", trueFalse);
                             player.sendMessage(AreaProtection.Prefix + "Set break to " + args[3]);
+                            area.setBreakAllowed(trueFalse);
                             return false;
                         } else if(flag.equalsIgnoreCase("place")) {
                             AreaManager.updateFlag(area, "place", trueFalse);
                             player.sendMessage(AreaProtection.Prefix + "Set place to " + args[3]);
+                            area.setPlace(trueFalse);
                             return false;
                         } else if (flag.equalsIgnoreCase("pvp")) {
                             AreaManager.updateFlag(area, "pvp", trueFalse);
                             player.sendMessage(AreaProtection.Prefix + "Set pvp to " + args[3]);
+                            area.setPvp(trueFalse);
                             return false;
                         } else if (flag.equalsIgnoreCase("interact")) {
                             AreaManager.updateFlag(area, "interact", trueFalse);
                             player.sendMessage(AreaProtection.Prefix + "Set interact to " + args[3]);
+                            area.setInteract(trueFalse);
                             return false;
+                        } else if(flag.equalsIgnoreCase("god")) {
+                            AreaManager.updateFlag(area, "god", trueFalse);
+                            player.sendMessage(AreaProtection.Prefix + "Set god to " + args[3]);
+                            area.setGod(trueFalse);
+                            return false;
+                        } else {
+                            player.sendMessage(AreaProtection.Prefix + "Flag " + flag + " not found.");
+                            player.sendMessage(AreaProtection.Prefix + "Available flags: break, place, interact, pvp, god");
                         }
                     } else {
                         player.sendMessage(AreaProtection.Prefix + "§cCouldn't find a area with name " + args[1]);
@@ -157,6 +188,7 @@ public class AreaProtectionCommand extends CommandManager {
         player.sendMessage(AreaProtection.Prefix + "/ap list");
         player.sendMessage(AreaProtection.Prefix + "/ap info <area_name>");
         player.sendMessage(AreaProtection.Prefix + "/ap goto <area_name>");
+        player.sendMessage(AreaProtection.Prefix + "/ap bypass");
         player.sendMessage(AreaProtection.Prefix + "/ap pos1");
         player.sendMessage(AreaProtection.Prefix + "/ap pos2");
         player.sendMessage(AreaProtection.Prefix + "/ap create <name>");

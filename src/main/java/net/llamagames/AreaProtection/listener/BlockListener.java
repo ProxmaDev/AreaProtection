@@ -32,6 +32,7 @@ import cn.nukkit.event.Listener;
 import cn.nukkit.event.block.BlockBreakEvent;
 import cn.nukkit.event.block.BlockPlaceEvent;
 import cn.nukkit.event.entity.EntityDamageByEntityEvent;
+import cn.nukkit.event.entity.EntityDamageEvent;
 import cn.nukkit.event.player.PlayerInteractEvent;
 import net.llamagames.AreaProtection.AreaProtection;
 import net.llamagames.AreaProtection.utils.Area;
@@ -46,6 +47,17 @@ public class BlockListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onBreak(BlockBreakEvent event) {
+        if(AreaProtection.playersInPosMode.containsKey(event.getPlayer())) {
+            if(AreaProtection.playersInPosMode.get(event.getPlayer()) == 0) {
+                AreaProtection.firstPoses.put(event.getPlayer(), event.getBlock().getLocation());
+                event.getPlayer().sendMessage("1. Position set.");
+            } else if(AreaProtection.playersInPosMode.get(event.getPlayer()) == 1) {
+                AreaProtection.secondPoses.put(event.getPlayer(), event.getBlock().getLocation());
+                event.getPlayer().sendMessage("2. Position set.");
+            }
+            AreaProtection.playersInPosMode.remove(event.getPlayer());
+            return;
+        }
         Area area = plugin.getAreaByPos(event.getBlock().getLocation());
         if(area != null) {
             if(!area.isBreakAllowed()) {
@@ -60,6 +72,18 @@ public class BlockListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlace(BlockPlaceEvent event) {
+        if(AreaProtection.playersInPosMode.containsKey(event.getPlayer())) {
+            if(AreaProtection.playersInPosMode.get(event.getPlayer()) == 0) {
+                AreaProtection.firstPoses.put(event.getPlayer(), event.getBlock().getLocation());
+                event.getPlayer().sendMessage("1. Position set.");
+            } else if(AreaProtection.playersInPosMode.get(event.getPlayer()) == 1) {
+                AreaProtection.secondPoses.put(event.getPlayer(), event.getBlock().getLocation());
+                event.getPlayer().sendMessage("2. Position set.");
+            }
+            AreaProtection.playersInPosMode.remove(event.getPlayer());
+            return;
+        }
+
         Area area = plugin.getAreaByPos(event.getBlock().getLocation());
         if(area != null) {
             if(!area.isPlaceAllowed()) {
@@ -82,6 +106,18 @@ public class BlockListener implements Listener {
                     event.getPlayer().sendMessage("§cYou can't interact with that.");
                 }
             }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onDamage(EntityDamageEvent event) {
+        if(event.getEntity() instanceof Player) {
+                Area playerArea = plugin.getAreaByPos(event.getEntity().getPosition());
+                if(playerArea != null) {
+                    if(playerArea.isGod()) {
+                        event.setCancelled();
+                    }
+                }
         }
     }
 
@@ -118,9 +154,7 @@ public class BlockListener implements Listener {
     }
 
     public boolean hasBypassPerms(Player player) {
-        if(player.isOp()) {
-            return true;
-        } else if (player.hasPermission("areaprotection.bypass")) {
+        if(AreaProtection.bypassPlayers.contains(player)) {
             return true;
         } else {
             return false;

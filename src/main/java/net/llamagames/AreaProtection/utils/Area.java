@@ -37,11 +37,12 @@ public class Area {
     private Level world;
 
     private boolean pvp;
+    private boolean god;
     private boolean breakAllowed;
     private boolean place;
     private boolean interact;
 
-    public Area(String name, Vector3 pos1, Vector3 pos2, Level world, boolean breakAllowed, boolean place, boolean interact, boolean pvp) {
+    public Area(String name, Vector3 pos1, Vector3 pos2, Level world, boolean breakAllowed, boolean place, boolean interact, boolean pvp, boolean god) {
         this.name = name;
         this.pos1 = pos1;
         this.pos2 = pos2;
@@ -50,6 +51,7 @@ public class Area {
         this.place = place;
         this.interact = interact;
         this.pvp = pvp;
+        this.god = god;
     }
 
     public String getName() {
@@ -98,5 +100,27 @@ public class Area {
         return pvp;
     }
 
+    public boolean isGod() {
+        return god;
+    }
 
+    public void setBreakAllowed(boolean breakAllowed) {
+        this.breakAllowed = breakAllowed;
+    }
+
+    public void setInteract(boolean interact) {
+        this.interact = interact;
+    }
+
+    public void setPlace(boolean place) {
+        this.place = place;
+    }
+
+    public void setPvp(boolean pvp) {
+        this.pvp = pvp;
+    }
+
+    public void setGod(boolean god) {
+        this.god = god;
+    }
 }
