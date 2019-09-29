@@ -31,6 +31,7 @@ import cn.nukkit.math.Vector3;
 import cn.nukkit.plugin.PluginBase;
 import net.llamagames.AreaProtection.commands.AreaProtectionCommand;
 import net.llamagames.AreaProtection.listener.BlockListener;
+import net.llamagames.AreaProtection.listener.EntityListener;
 import net.llamagames.AreaProtection.utils.Area;
 import net.llamagames.AreaProtection.utils.AreaManager;
 
@@ -47,7 +48,11 @@ public class AreaProtection extends PluginBase {
     public static ArrayList<Area> areas = new ArrayList<>();
     public static ArrayList<Player> bypassPlayers = new ArrayList<>();
 
+    public static HashMap<Player, Long> messageCooldowns = new HashMap<>();
+
     public static AreaProtection instance;
+
+    private int version = 1;
 
     @Override
     public void onLoad() {
@@ -61,9 +66,17 @@ public class AreaProtection extends PluginBase {
 
     private void init() {
         saveDefaultConfig();
+        if (!getConfig().exists("version")) {
+            updateVersion();
+        } else {
+            if (getConfig().getInt("version") != version) {
+                updateVersion();
+            }
+        }
         loadAreas();
         registerCommands();
         getServer().getPluginManager().registerEvents(new BlockListener(this), this);
+        getServer().getPluginManager().registerEvents(new EntityListener(this), this);
     }
 
     public Area getAreaByPos(Position position) {
@@ -110,8 +123,9 @@ public class AreaProtection extends PluginBase {
             boolean interact = (boolean) area.get("interact");
             boolean pvp = (boolean) area.get("pvp");
             boolean god = (boolean) area.get("god");
+            boolean mobspawn = (boolean) area.get("mob-spawn");
 
-            areas.add(new Area(name, new Vector3(x, y, z), new Vector3(xx, yy, zz), getServer().getLevelByName(world), breakAllowed, place, interact, pvp, god));
+            areas.add(new Area(name, new Vector3(x, y, z), new Vector3(xx, yy, zz), getServer().getLevelByName(world), breakAllowed, place, interact, pvp, god, mobspawn));
         }
     }
 
@@ -123,6 +137,31 @@ public class AreaProtection extends PluginBase {
         CommandMap map = getServer().getCommandMap();
 
         map.register("ban", new AreaProtectionCommand(this));
+    }
+
+    public void updateVersion() {
+        getLogger().alert("Config is outdated!");
+        getLogger().info("Updating config to version " + version + "...");
+        if (!getConfig().exists("version")) {
+            getConfig().set("version", version);
+        }
+        if (getConfig().exists("areas")) {
+            getLogger().info("Existing areas found. updating...");
+            for (Map.Entry<String, Object> map: getConfig().getSection("areas").getAllMap().entrySet()) {
+                String name = map.getKey();
+                boolean updated = false;
+
+                if (!getConfig().exists("areas." + name + ".mob-spawn")) {
+                    getConfig().set("areas." + name + ".mob-spawn", false);
+                    updated = true;
+                }
+                if (updated) {
+                    getLogger().info("Updated area " + name + ".");
+                }
+                getConfig().save();
+                getConfig().reload();
+            }
+        }
     }
 
 }

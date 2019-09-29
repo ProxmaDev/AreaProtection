@@ -41,8 +41,9 @@ public class Area {
     private boolean breakAllowed;
     private boolean place;
     private boolean interact;
+    private boolean mobSpawn;
 
-    public Area(String name, Vector3 pos1, Vector3 pos2, Level world, boolean breakAllowed, boolean place, boolean interact, boolean pvp, boolean god) {
+    public Area(String name, Vector3 pos1, Vector3 pos2, Level world, boolean breakAllowed, boolean place, boolean interact, boolean pvp, boolean god, boolean mobSpawn) {
         this.name = name;
         this.pos1 = pos1;
         this.pos2 = pos2;
@@ -52,6 +53,7 @@ public class Area {
         this.interact = interact;
         this.pvp = pvp;
         this.god = god;
+        this.mobSpawn = mobSpawn;
     }
 
     public String getName() {
@@ -122,5 +124,13 @@ public class Area {
 
     public void setGod(boolean god) {
         this.god = god;
+    }
+
+    public boolean isMobSpawnAllowed() {
+        return mobSpawn;
+    }
+
+    public void setMobSpawn(boolean mobSpawn) {
+        this.mobSpawn = mobSpawn;
     }
 }

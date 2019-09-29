@@ -47,6 +47,7 @@ public class AreaManager {
         config.set("areas." + name + ".interact", true);
         config.set("areas." + name + ".pvp", true);
         config.set("areas." + name + ".god", false);
+        config.set("areas." + name + ".mob-spawn", true);
         config.save();
         config.reload();
         plugin.loadAreas();

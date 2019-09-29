@@ -26,6 +26,8 @@ package net.llamagames.AreaProtection.commands;
 
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
+import cn.nukkit.command.data.CommandParamType;
+import cn.nukkit.command.data.CommandParameter;
 import cn.nukkit.math.Vector3;
 import net.llamagames.AreaProtection.AreaProtection;
 import net.llamagames.AreaProtection.utils.Area;
@@ -38,6 +40,20 @@ public class AreaProtectionCommand extends CommandManager {
     public AreaProtectionCommand(AreaProtection plugin) {
         super(plugin, "ap", "Manage Areas", "/ap");
         this.plugin = plugin;
+        this.commandParameters.clear();
+        this.commandParameters.put("default", new CommandParameter[]{
+                new CommandParameter("todo", false, new String[]{"bypass", "pos1", "pos2", "list"})
+        });
+        this.commandParameters.put("areaname", new CommandParameter[]{
+                new CommandParameter("todo", false, new String[]{"info", "goto", "create"}),
+                new CommandParameter("area", CommandParamType.STRING, false)
+        });
+        this.commandParameters.put("flag", new CommandParameter[]{
+                new CommandParameter("todo", false, new String[]{"flag"}),
+                new CommandParameter("area", CommandParamType.STRING, false),
+                new CommandParameter("flag", false, new String[]{"break", "place", "pvp", "interact", "god", "mob-spawn"}),
+                new CommandParameter("bool", false, new String[]{"true", "false"})
+        });
     }
 
     public boolean execute(CommandSender sender, String label, String[] args) {
@@ -116,6 +132,7 @@ public class AreaProtectionCommand extends CommandManager {
                         player.sendMessage(AreaProtection.Prefix + "Interact: " + area.isInteractAllowed());
                         player.sendMessage(AreaProtection.Prefix + "PvP: " + area.isPvpAllowed());
                         player.sendMessage(AreaProtection.Prefix + "God: " + area.isGod());
+                        player.sendMessage(AreaProtection.Prefix + "Mob Spawning: " + area.isMobSpawnAllowed());
                         return false;
                     } else {
                         player.sendMessage(AreaProtection.Prefix + "§cCouldn't find area with name " + args[1]);
@@ -163,9 +180,15 @@ public class AreaProtectionCommand extends CommandManager {
                             player.sendMessage(AreaProtection.Prefix + "Set god to " + args[3]);
                             area.setGod(trueFalse);
                             return false;
-                        } else {
+                        } else if(flag.equalsIgnoreCase("mob-spawn")) {
+                            AreaManager.updateFlag(area, "mob-spawn", trueFalse);
+                            player.sendMessage(AreaProtection.Prefix + "Set mob-spawn to " + args[3]);
+                            area.setMobSpawn(trueFalse);
+                            return false;
+                        }
+                        else {
                             player.sendMessage(AreaProtection.Prefix + "Flag " + flag + " not found.");
-                            player.sendMessage(AreaProtection.Prefix + "Available flags: break, place, interact, pvp, god");
+                            player.sendMessage(AreaProtection.Prefix + "Available flags: break, place, interact, pvp, god, mob-spawn");
                         }
                     } else {
                         player.sendMessage(AreaProtection.Prefix + "§cCouldn't find a area with name " + args[1]);
