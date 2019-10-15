@@ -25,7 +25,7 @@ public class EntityListener implements Listener {
                 return;
             }
             if (!area.isMobSpawnAllowed()) {
-                event.setCancelled(true);
+                event.getEntity().close();
             }
         }
     }
