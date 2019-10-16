@@ -10,8 +10,9 @@ You can download AreaProtection at Nukkit resources: https://nukkitx.com/resourc
 
 # API
 ```java
-        AreaProtection.getInstance();
+AreaProtection.getInstance();
 ```
+A full API documentation can be found [here](https://github.com/SchdowNVIDIA/AreaProtection/wiki/API).
 
 # Maven Dependency
 In order to use AreaProtection's API with maven add the following to your pom.xml:
