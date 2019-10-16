@@ -133,4 +133,16 @@ public class Area {
     public void setMobSpawn(boolean mobSpawn) {
         this.mobSpawn = mobSpawn;
     }
+
+    public void setWorld(Level world) {
+        this.world = world;
+    }
+
+    public void setPos1(Vector3 pos1) {
+        this.pos1 = pos1;
+    }
+
+    public void setPos2(Vector3 pos2) {
+        this.pos2 = pos2;
+    }
 }

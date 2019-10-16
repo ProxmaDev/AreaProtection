@@ -29,6 +29,8 @@ import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.Config;
 import net.llamagames.AreaProtection.AreaProtection;
 
+import java.util.Map;
+
 public class AreaManager {
 
     public static void createArea(String name, Vector3 pos1, Vector3 pos2, Level world) {
@@ -62,9 +64,24 @@ public class AreaManager {
         config.set("areas." + area.getName() + "." + key, value);
         config.save();
         config.reload();
+        plugin.reloadArea(area);
         //plugin.loadAreas();
 
         plugin.getLogger().info(AreaProtection.Prefix + "Set " + key + " for " + area.getName() + " to " + value);
+    }
+
+    public static void deleteAreaByName(String name) {
+        AreaProtection plugin = AreaProtection.getInstance();
+        Area area = plugin.getAreaByName(name);
+        if (area != null) {
+            AreaProtection.areas.remove(area);
+        }
+        Config config = plugin.getConfig();
+        Map<String, Object> map = config.getSection("areas").getAllMap();
+        map.remove(name);
+        config.set("areas", map);
+        config.save();
+        config.reload();
     }
 
 }

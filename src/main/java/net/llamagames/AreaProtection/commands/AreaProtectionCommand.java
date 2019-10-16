@@ -25,6 +25,7 @@
 package net.llamagames.AreaProtection.commands;
 
 import cn.nukkit.Player;
+import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
@@ -33,19 +34,19 @@ import net.llamagames.AreaProtection.AreaProtection;
 import net.llamagames.AreaProtection.utils.Area;
 import net.llamagames.AreaProtection.utils.AreaManager;
 
-public class AreaProtectionCommand extends CommandManager {
+public class AreaProtectionCommand extends Command {
 
     private AreaProtection plugin;
 
     public AreaProtectionCommand(AreaProtection plugin) {
-        super(plugin, "ap", "Manage Areas", "/ap");
+        super("ap", "Manage Areas", "/ap", new String[]{"areaprotection"});
         this.plugin = plugin;
         this.commandParameters.clear();
         this.commandParameters.put("default", new CommandParameter[]{
                 new CommandParameter("todo", false, new String[]{"bypass", "pos1", "pos2", "list"})
         });
         this.commandParameters.put("areaname", new CommandParameter[]{
-                new CommandParameter("todo", false, new String[]{"info", "goto", "create"}),
+                new CommandParameter("todo", false, new String[]{"info", "goto", "create", "delete"}),
                 new CommandParameter("area", CommandParamType.STRING, false)
         });
         this.commandParameters.put("flag", new CommandParameter[]{
@@ -61,7 +62,13 @@ public class AreaProtectionCommand extends CommandManager {
             sender.sendMessage("§cNo permission");
             return false;
         }
-        if(sender instanceof Player) {
+        if (args.length < 1) {
+            plugin.sendSenderUsage(sender);
+            return false;
+        }
+        APSubCommandHandler.runSubCommand(args[0], sender, args);
+
+        /*if(sender instanceof Player) {
             Player player = (Player) sender;
             if (args.length == 1) {
                 if (args[0].equalsIgnoreCase("pos1")) {
@@ -110,7 +117,17 @@ public class AreaProtectionCommand extends CommandManager {
                     AreaManager.createArea(args[1], AreaProtection.firstPoses.get(player), AreaProtection.secondPoses.get(player), AreaProtection.firstPoses.get(player).getLevel());
                     player.sendMessage(AreaProtection.Prefix + "Area " + args[1] + " created.");
                     return false;
-                } else if(args[0].equalsIgnoreCase("goto")) {
+                } else if(args[0].equalsIgnoreCase("delete")) {
+                    Area area = plugin.getAreaByName(args[1]);
+                    if (area == null) {
+                        player.sendMessage(AreaProtection.Prefix + "§cCouldn't find area with name " +  args[1]);
+                        return false;
+                    }
+                    AreaManager.deleteAreaByName(args[1]);
+                    player.sendMessage(AreaProtection.Prefix + "Area " + args[1] + " successfully deleted.");
+                    return false;
+                }
+                else if(args[0].equalsIgnoreCase("goto")) {
                     Area area = plugin.getAreaByName(args[1]);
                     if(area != null) {
                         player.teleport(area.getPos1());
@@ -204,9 +221,11 @@ public class AreaProtectionCommand extends CommandManager {
             }
             // Code here
         }
+        return false;*/
         return false;
     }
 
+    @Deprecated
     public void sendUsage(Player player) {
         player.sendMessage(AreaProtection.Prefix + "/ap list");
         player.sendMessage(AreaProtection.Prefix + "/ap info <area_name>");
@@ -215,6 +234,7 @@ public class AreaProtectionCommand extends CommandManager {
         player.sendMessage(AreaProtection.Prefix + "/ap pos1");
         player.sendMessage(AreaProtection.Prefix + "/ap pos2");
         player.sendMessage(AreaProtection.Prefix + "/ap create <name>");
+        player.sendMessage(AreaProtection.Prefix + "/ap delete <area_name>");
         player.sendMessage(AreaProtection.Prefix + "/ap flag <area_name> <flag> <true/false>");
     }
 }

@@ -50,10 +50,10 @@ public class BlockListener implements Listener {
         if(AreaProtection.playersInPosMode.containsKey(event.getPlayer())) {
             if(AreaProtection.playersInPosMode.get(event.getPlayer()) == 0) {
                 AreaProtection.firstPoses.put(event.getPlayer(), event.getBlock().getLocation());
-                event.getPlayer().sendMessage("1. Position set.");
+                event.getPlayer().sendMessage(AreaProtection.Prefix + "1st Position set.");
             } else if(AreaProtection.playersInPosMode.get(event.getPlayer()) == 1) {
                 AreaProtection.secondPoses.put(event.getPlayer(), event.getBlock().getLocation());
-                event.getPlayer().sendMessage("2. Position set.");
+                event.getPlayer().sendMessage(AreaProtection.Prefix + "2nd Position set.");
             }
             AreaProtection.playersInPosMode.remove(event.getPlayer());
             return;

@@ -26,16 +26,23 @@ package net.llamagames.AreaProtection;
 
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandMap;
+import cn.nukkit.command.CommandSender;
+import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.plugin.PluginBase;
+import cn.nukkit.utils.Config;
+import cn.nukkit.utils.ConfigSection;
 import net.llamagames.AreaProtection.commands.AreaProtectionCommand;
+import net.llamagames.AreaProtection.commands.subcommands.*;
+import net.llamagames.AreaProtection.commands.APSubCommandHandler;
 import net.llamagames.AreaProtection.listener.BlockListener;
 import net.llamagames.AreaProtection.listener.EntityListener;
 import net.llamagames.AreaProtection.utils.Area;
 import net.llamagames.AreaProtection.utils.AreaManager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,6 +54,8 @@ public class AreaProtection extends PluginBase {
     public static HashMap<Player, Integer> playersInPosMode = new HashMap<Player, Integer>();
     public static ArrayList<Area> areas = new ArrayList<>();
     public static ArrayList<Player> bypassPlayers = new ArrayList<>();
+
+    public static ArrayList<String> flags = new ArrayList<String>(Arrays.asList("break", "place", "interact", "pvp", "god", "mob-spawn"));
 
     public static HashMap<Player, Long> messageCooldowns = new HashMap<>();
 
@@ -79,30 +88,7 @@ public class AreaProtection extends PluginBase {
         getServer().getPluginManager().registerEvents(new EntityListener(this), this);
     }
 
-    public Area getAreaByPos(Position position) {
-        Area area = null;
 
-        for(Area areaa: areas) {
-            if (areaa.isInArea(position)) {
-                area = areaa;
-                break;
-            }
-        }
-
-        return area;
-    }
-
-    public Area getAreaByName(String name) {
-        Area area = null;
-
-        for (Area areaa: areas) {
-            if(areaa.getName().equalsIgnoreCase(name)) {
-                area = areaa;
-            }
-        }
-
-        return area;
-    }
 
     @SuppressWarnings("unchecked")
     public void loadAreas() {
@@ -133,13 +119,46 @@ public class AreaProtection extends PluginBase {
         return instance;
     }
 
-    public void registerCommands() {
+    public void sendUsage(Player player) {
+        player.sendMessage(AreaProtection.Prefix + "/ap list");
+        player.sendMessage(AreaProtection.Prefix + "/ap info <area_name>");
+        player.sendMessage(AreaProtection.Prefix + "/ap goto <area_name>");
+        player.sendMessage(AreaProtection.Prefix + "/ap bypass");
+        player.sendMessage(AreaProtection.Prefix + "/ap pos1");
+        player.sendMessage(AreaProtection.Prefix + "/ap pos2");
+        player.sendMessage(AreaProtection.Prefix + "/ap create <name>");
+        player.sendMessage(AreaProtection.Prefix + "/ap delete <area_name>");
+        player.sendMessage(AreaProtection.Prefix + "/ap flag <area_name> <flag> <true/false>");
+    }
+
+    public void sendSenderUsage(CommandSender sender) {
+        sender.sendMessage(AreaProtection.Prefix + "/ap list");
+        sender.sendMessage(AreaProtection.Prefix + "/ap info <area_name>");
+        sender.sendMessage(AreaProtection.Prefix + "/ap goto <area_name>");
+        sender.sendMessage(AreaProtection.Prefix + "/ap bypass");
+        sender.sendMessage(AreaProtection.Prefix + "/ap pos1");
+        sender.sendMessage(AreaProtection.Prefix + "/ap pos2");
+        sender.sendMessage(AreaProtection.Prefix + "/ap create <name>");
+        sender.sendMessage(AreaProtection.Prefix + "/ap delete <area_name>");
+        sender.sendMessage(AreaProtection.Prefix + "/ap flag <area_name> <flag> <true/false>");
+    }
+
+    private void registerCommands() {
         CommandMap map = getServer().getCommandMap();
 
         map.register("ban", new AreaProtectionCommand(this));
+        registerSubCommand("bypass", new BypassCommand());
+        registerSubCommand("pos1", new FirstPosCommand());
+        registerSubCommand("pos2", new SecondPosCommand());
+        registerSubCommand("list", new ListCommand());
+        registerSubCommand("info", new InfoCommand());
+        registerSubCommand("goto", new GotoCommand());
+        registerSubCommand("create", new CreateCommand());
+        registerSubCommand("delete", new DeleteCommand());
+        registerSubCommand("flag", new FlagCommand());
     }
 
-    public void updateVersion() {
+    private void updateVersion() {
         getLogger().alert("Config is outdated!");
         getLogger().info("Updating config to version " + version + "...");
         if (!getConfig().exists("version")) {
@@ -164,6 +183,58 @@ public class AreaProtection extends PluginBase {
         }
     }
 
+    // API Stuff (it's in the main because the api is not so big.)
+    public Area getAreaByPos(Position position) {
+
+        for(Area area: areas) {
+            if (area.isInArea(position)) {
+                return area;
+            }
+        }
+
+        return null;
+    }
+
+    public Area getAreaByName(String name) {
+
+        for (Area area: areas) {
+            if(area.getName().equalsIgnoreCase(name)) {
+                return area;
+            }
+        }
+
+        return null;
+    }
+
+    public void createArea(String name, Vector3 pos1, Vector3 pos2, Level world) {
+        AreaManager.createArea(name, pos1, pos2, world);
+    }
+
+    public void deleteArea(String name) {
+        AreaManager.deleteAreaByName(name);
+    }
+
+    public void setFlagOfArea(Area area, String flag, boolean value) {
+        if (flags.contains(flag)) {
+            AreaManager.updateFlag(area, flag, value);
+        } else {
+            getLogger().info("API ERROR: invalid flag: " + "\"" + flag + "\"");
+        }
+    }
+
+    public void registerSubCommand(String name, SubCommand subCommand) {
+        APSubCommandHandler.registerSubCommand(name, subCommand);
+    }
+
+    public void reloadArea(Area area) {
+        ConfigSection c = getConfig().getSection(area.getName());
+        area.setBreakAllowed(c.getBoolean("break"));
+        area.setPlace(c.getBoolean("place"));
+        area.setInteract(c.getBoolean("interact"));
+        area.setPvp(c.getBoolean("pvp"));
+        area.setGod(c.getBoolean("god"));
+        area.setMobSpawn(c.getBoolean("mobspawn"));
+    }
 }
 
 
