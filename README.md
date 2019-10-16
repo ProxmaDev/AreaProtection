@@ -9,14 +9,14 @@ It's made for the admins.
 You can download AreaProtection at Nukkit resources: https://nukkitx.com/resources/areaprotection.281/
 
 # API
-`
+```java
         AreaProtection.getInstance();
-`
+```
 
 # Maven Dependency
 In order to use AreaProtection's API with maven add the following to your pom.xml:
 
-`
+```xml
     <repositories>
         <repository>
             <id>nukkit-repo</id>
@@ -32,7 +32,7 @@ In order to use AreaProtection's API with maven add the following to your pom.xm
             <scope>provided</scope>
         </dependency>
     </dependencies>
-`
+```
 # Features
 | Feature          |   |
 |------------------|---|
