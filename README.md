@@ -25,12 +25,12 @@ In order to use AreaProtection's API with maven add the following to your pom.xm
     </repositories>
 
     <dependencies>
-    <dependency>
-        <groupId>net.llamagames.AreaProtection</groupId>
-        <artifactId>AreaProtection</artifactId>
-        <version>1.1.1-SNAPSHOT</version>
-        <scope>provided</scope>
-    </dependency>
+        <dependency>
+            <groupId>net.llamagames.AreaProtection</groupId>
+            <artifactId>AreaProtection</artifactId>
+            <version>VERSION_YOU_USE</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 `
 # Features
