@@ -23,9 +23,7 @@ In order to use AreaProtection's API with maven add the following to your pom.xm
             <url>https://repo.nukkitx.com/maven-snapshots</url>
         </repository>
     </repositories>
- `
- 
- `
+
     <dependencies>
     <dependency>
         <groupId>net.llamagames.AreaProtection</groupId>
