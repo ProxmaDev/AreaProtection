@@ -15,6 +15,7 @@ You can download AreaProtection at Nukkit resources: https://nukkitx.com/resourc
 
 # Maven Dependency
 In order to use AreaProtection's API with maven add the following to your pom.xml:
+
 `
     <repositories>
         <repository>
@@ -22,7 +23,7 @@ In order to use AreaProtection's API with maven add the following to your pom.xm
             <url>https://repo.nukkitx.com/maven-snapshots</url>
         </repository>
     </repositories>
-
+    
     <dependencies>
     <dependency>
         <groupId>net.llamagames.AreaProtection</groupId>
