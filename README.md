@@ -24,6 +24,7 @@ In order to use AreaProtection's API with maven add the following to your pom.xm
         </repository>
     </repositories>
  `
+ 
  `
     <dependencies>
     <dependency>
