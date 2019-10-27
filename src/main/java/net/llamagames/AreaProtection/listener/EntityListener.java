@@ -2,6 +2,7 @@ package net.llamagames.AreaProtection.listener;
 
 import cn.nukkit.Player;
 import cn.nukkit.entity.Entity;
+import cn.nukkit.entity.mob.EntityMob;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
@@ -21,10 +22,7 @@ public class EntityListener implements Listener {
     public void onMobSpawn(EntitySpawnEvent event) {
         Area area = plugin.getAreaByPos(event.getPosition());
         if (area != null) {
-            if (event.getEntity() instanceof Player) {
-                return;
-            }
-            if (!area.isMobSpawnAllowed()) {
+            if (event.getEntity() instanceof EntityMob && !area.isMobSpawnAllowed()) {
                 event.getEntity().close();
             }
         }
