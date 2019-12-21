@@ -9,7 +9,7 @@ Get your own **VPS** today here: [Click me](https://zap-hosting.com/schdowvps)
 Or your own **Rootserver**: [Click me](https://zap-hosting.com/schdowrootserver)
 
 Special offer:
-Currently, you can get a **50%** discount by using the Code `BLACK2019-50OFF`. So why not try it out?
+Use the code for a 10% discount
 ***
 ### JetBrains
 This project was made with the help of JetBrains amazing tools. You can visit JetBrains [here](https://www.jetbrains.com/).
