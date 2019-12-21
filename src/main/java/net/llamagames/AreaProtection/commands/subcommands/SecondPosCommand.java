@@ -3,6 +3,7 @@ package net.llamagames.AreaProtection.commands.subcommands;
 import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import net.llamagames.AreaProtection.AreaProtection;
+import net.llamagames.AreaProtection.utils.Language;
 
 public class SecondPosCommand extends SubCommand {
 
@@ -15,7 +16,7 @@ public class SecondPosCommand extends SubCommand {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             AreaProtection.playersInPosMode.put(player, 1);
-            player.sendMessage(AreaProtection.Prefix + "Break or place a block to set 2nd Position.");
+            player.sendMessage(AreaProtection.Prefix + Language.getMessage("set-pos2"));
         }
     }
 }

@@ -64,8 +64,6 @@ public class AreaManager {
         config.set("areas." + area.getName() + "." + key, value);
         config.save();
         config.reload();
-        plugin.reloadArea(area);
-        //plugin.loadAreas();
 
         plugin.getLogger().info(AreaProtection.Prefix + "Set " + key + " for " + area.getName() + " to " + value);
     }

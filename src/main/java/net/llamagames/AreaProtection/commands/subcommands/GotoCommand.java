@@ -4,6 +4,7 @@ import cn.nukkit.Player;
 import cn.nukkit.command.CommandSender;
 import net.llamagames.AreaProtection.AreaProtection;
 import net.llamagames.AreaProtection.utils.Area;
+import net.llamagames.AreaProtection.utils.Language;
 
 public class GotoCommand extends SubCommand {
 
@@ -22,9 +23,9 @@ public class GotoCommand extends SubCommand {
             Area area = ap.getAreaByName(args[1]);
             if (area != null) {
                 player.teleport(area.getPos1());
-                player.sendMessage(AreaProtection.Prefix + "Teleported to area " + args[1]);
+                player.sendMessage(AreaProtection.Prefix + Language.getAndReplace("area-teleported", args[1]));
             } else {
-                player.sendMessage(AreaProtection.Prefix + "§cCouldn't find area with name " + args[1]);
+                player.sendMessage(AreaProtection.Prefix + Language.getAndReplace("cant-find-area", args[1]));
             }
         }
     }

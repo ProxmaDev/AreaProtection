@@ -1,0 +1,59 @@
+# [~~~ Prefix ~~~]
+prefix: "§8» §3AreaProtection §8| §7"
+
+# [~~~ General Messages ~~~]
+no-break: "§cYou can't break that block."
+no-interact: "§cYou can't interact with that."
+no-place: "§cYou can't place that block here."
+no-pvp: "§cYou can't pvp here."
+
+# [~~~ Commands & Setup ~~~]
+
+# Info:
+# [0], [1], [2], ... are placeholders.
+
+# general:
+cant-find-area: "Couldn't find area with name [0]."
+
+# /ap create
+positions-missing: "Please set the positions first."
+area-created: "Area [0] created."
+
+# /ap flag
+flag-not-found: "Flag [0] not found."
+flag-list: "Available flags: break, place, interact, pvp, god, mob-spawn"
+flag-trueFalse: "Flag value needs to be true or false."
+set-flag: "Set [0] to [1]."
+
+# /ap goto
+area-teleported: "Teleported to area [0]"
+
+# /ap info
+info-about: "Informations about [0]:"
+info-line: "----------------------------------"
+info-world: "World: [0]"
+info-pos1: "1. Position: X: [0], Y: [1], Z: [2]"
+info-pos2: "2. Position: X: [0], Y: [1], Z: [2]"
+info-break: "Break: [0]"
+info-place: "Place: [0]"
+info-interact: "Interact: [0]"
+info-pvp: "PvP: [0]"
+info-god: "God: [0]"
+info-mobspawning: "Mob Spawning: [0]"
+
+# /ap list
+no-areas: "There are no areas to list."
+area-list: "A list of all areas: [0]"
+
+# /ap bypass
+not-longer-bypassing: "You're no longer bypassing every restriction."
+bypassing-now: "You're bypassing every restriction now."
+
+# /ap pos + setting
+set-pos1: "Break or place a block to set 1st Position."
+set-pos2: "Break or place a block to set 2nd Position."
+pos1-set: "1st Position set."
+pos2-set: "2nd Position set."
+
+# /ap delete
+area-deleted: "Area [0] successfully deleted."

@@ -40,6 +40,7 @@ import net.llamagames.AreaProtection.listener.BlockListener;
 import net.llamagames.AreaProtection.listener.EntityListener;
 import net.llamagames.AreaProtection.utils.Area;
 import net.llamagames.AreaProtection.utils.AreaManager;
+import net.llamagames.AreaProtection.utils.Language;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,7 +49,7 @@ import java.util.Map;
 
 public class AreaProtection extends PluginBase {
 
-    public static String Prefix = "§8» §3AreaProtection §8| §7";
+    public static String Prefix;
     public static HashMap<Player, Position> firstPoses = new HashMap<>();
     public static HashMap<Player, Position> secondPoses = new HashMap<>();
     public static HashMap<Player, Integer> playersInPosMode = new HashMap<Player, Integer>();
@@ -83,6 +84,8 @@ public class AreaProtection extends PluginBase {
             }
         }
         loadAreas();
+        Language.init();
+        Prefix = Language.getMessage("prefix");
         registerCommands();
         getServer().getPluginManager().registerEvents(new BlockListener(this), this);
         getServer().getPluginManager().registerEvents(new EntityListener(this), this);
@@ -120,7 +123,8 @@ public class AreaProtection extends PluginBase {
     }
 
     public void sendUsage(Player player) {
-        player.sendMessage(AreaProtection.Prefix + "/ap list");
+        sendSenderUsage(player);
+        /*player.sendMessage(AreaProtection.Prefix + "/ap list");
         player.sendMessage(AreaProtection.Prefix + "/ap info <area_name>");
         player.sendMessage(AreaProtection.Prefix + "/ap goto <area_name>");
         player.sendMessage(AreaProtection.Prefix + "/ap bypass");
@@ -128,7 +132,7 @@ public class AreaProtection extends PluginBase {
         player.sendMessage(AreaProtection.Prefix + "/ap pos2");
         player.sendMessage(AreaProtection.Prefix + "/ap create <name>");
         player.sendMessage(AreaProtection.Prefix + "/ap delete <area_name>");
-        player.sendMessage(AreaProtection.Prefix + "/ap flag <area_name> <flag> <true/false>");
+        player.sendMessage(AreaProtection.Prefix + "/ap flag <area_name> <flag> <true/false>");*/
     }
 
     public void sendSenderUsage(CommandSender sender) {
@@ -226,14 +230,23 @@ public class AreaProtection extends PluginBase {
         APSubCommandHandler.registerSubCommand(name, subCommand);
     }
 
+    @Deprecated
     public void reloadArea(Area area) {
-        ConfigSection c = getConfig().getSection(area.getName());
-        area.setBreakAllowed(c.getBoolean("break"));
-        area.setPlace(c.getBoolean("place"));
-        area.setInteract(c.getBoolean("interact"));
-        area.setPvp(c.getBoolean("pvp"));
-        area.setGod(c.getBoolean("god"));
-        area.setMobSpawn(c.getBoolean("mobspawn"));
+        getLogger().info("§cWARNING: reloadArea() is deprecated and will be removed soon.");
+        getLogger().info("§cWARNING: A plugin/addon is still using this method.");
+        /*
+        Config c = getConfig();
+        String aP = "areas." + area.getName();
+        area.setBreakAllowed(c.getBoolean(aP + ".break"));
+        area.setPlace(c.getBoolean(aP + ".place"));
+        area.setInteract(c.getBoolean(aP + ".interact"));
+        area.setPvp(c.getBoolean(aP + ".pvp"));
+        area.setGod(c.getBoolean(aP + ".god"));
+        area.setMobSpawn(c.getBoolean(aP + ".mobspawn"))*/
+    }
+
+    public void registerMessage(String key, String message) {
+        Language.messages.put(key, message);
     }
 }
 

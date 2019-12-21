@@ -3,6 +3,7 @@ package net.llamagames.AreaProtection.commands.subcommands;
 import cn.nukkit.command.CommandSender;
 import net.llamagames.AreaProtection.AreaProtection;
 import net.llamagames.AreaProtection.utils.Area;
+import net.llamagames.AreaProtection.utils.Language;
 
 public class InfoCommand extends SubCommand {
 
@@ -18,19 +19,19 @@ public class InfoCommand extends SubCommand {
         }
         Area area = ap.getAreaByName(args[1]);
         if(area != null) {
-            sender.sendMessage(AreaProtection.Prefix + "Information about " + args[1] + ":");
-            sender.sendMessage(AreaProtection.Prefix + "----------------------------------");
-            sender.sendMessage(AreaProtection.Prefix + "World: " + area.getWorld().getName());
-            sender.sendMessage(AreaProtection.Prefix + "1. Position: X: " + area.getPos1().x + ", Y: " + area.getPos1().y + ", Z: " + area.getPos1().z);
-            sender.sendMessage(AreaProtection.Prefix + "2. Position: X: " + area.getPos2().x + ", Y: " + area.getPos2().y + ", Z: " + area.getPos2().z);
-            sender.sendMessage(AreaProtection.Prefix + "Break: " + area.isBreakAllowed());
-            sender.sendMessage(AreaProtection.Prefix + "Place: " + area.isPlaceAllowed());
-            sender.sendMessage(AreaProtection.Prefix + "Interact: " + area.isInteractAllowed());
-            sender.sendMessage(AreaProtection.Prefix + "PvP: " + area.isPvpAllowed());
-            sender.sendMessage(AreaProtection.Prefix + "God: " + area.isGod());
-            sender.sendMessage(AreaProtection.Prefix + "Mob Spawning: " + area.isMobSpawnAllowed());
+            sender.sendMessage(AreaProtection.Prefix + Language.getAndReplace("info-about", args[1]));
+            sender.sendMessage(AreaProtection.Prefix + Language.getMessage("info-line"));
+            sender.sendMessage(AreaProtection.Prefix + Language.getAndReplace("info-world", area.getWorld().getName()));
+            sender.sendMessage(AreaProtection.Prefix + Language.getAndReplace("info-pos1", area.getPos1().x, area.getPos1().y, area.getPos1().z));
+            sender.sendMessage(AreaProtection.Prefix + Language.getAndReplace("info-pos2", area.getPos2().x, area.getPos2().y, area.getPos2().z));
+            sender.sendMessage(AreaProtection.Prefix + Language.getAndReplace("info-break", area.isBreakAllowed()));
+            sender.sendMessage(AreaProtection.Prefix + Language.getAndReplace("info-place", area.isPlaceAllowed()));
+            sender.sendMessage(AreaProtection.Prefix + Language.getAndReplace("info-interact", area.isInteractAllowed()));
+            sender.sendMessage(AreaProtection.Prefix + Language.getAndReplace("info-pvp", area.isPvpAllowed()));
+            sender.sendMessage(AreaProtection.Prefix + Language.getAndReplace("info-god", area.isGod()));
+            sender.sendMessage(AreaProtection.Prefix + Language.getAndReplace("info-mobspawning", area.isMobSpawnAllowed()));
         } else {
-            sender.sendMessage(AreaProtection.Prefix + "§cCouldn't find area with name " + args[1]);
+            sender.sendMessage(AreaProtection.Prefix + Language.getAndReplace("cant-find-area", args[1]));
         }
     }
 }
