@@ -9,7 +9,7 @@ Get your own **VPS** today here: [Click me](https://zap-hosting.com/schdowvps)
 Or your own **Rootserver**: [Click me](https://zap-hosting.com/schdowrootserver)
 
 Special offer:
-Use the code for a 10% discount
+Use the code `schdow-10` for a 10% discount
 ***
 ### JetBrains
 This project was made with the help of JetBrains amazing tools. You can visit JetBrains [here](https://www.jetbrains.com/).
