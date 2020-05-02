@@ -142,6 +142,7 @@ public class AreaProtection extends PluginBase {
         sender.sendMessage(AreaProtection.Prefix + "/ap bypass");
         sender.sendMessage(AreaProtection.Prefix + "/ap pos1");
         sender.sendMessage(AreaProtection.Prefix + "/ap pos2");
+        sender.sendMessage(AreaProtection.Prefix + "/ap reload");
         sender.sendMessage(AreaProtection.Prefix + "/ap create <name>");
         sender.sendMessage(AreaProtection.Prefix + "/ap delete <area_name>");
         sender.sendMessage(AreaProtection.Prefix + "/ap flag <area_name> <flag> <true/false>");
@@ -160,6 +161,7 @@ public class AreaProtection extends PluginBase {
         registerSubCommand("create", new CreateCommand());
         registerSubCommand("delete", new DeleteCommand());
         registerSubCommand("flag", new FlagCommand());
+        registerSubCommand("reload", new ReloadCommand());
     }
 
     private void updateVersion() {

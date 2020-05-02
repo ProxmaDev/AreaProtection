@@ -43,7 +43,7 @@ public class AreaProtectionCommand extends Command {
         this.plugin = plugin;
         this.commandParameters.clear();
         this.commandParameters.put("default", new CommandParameter[]{
-                new CommandParameter("todo", false, new String[]{"bypass", "pos1", "pos2", "list"})
+                new CommandParameter("todo", false, new String[]{"bypass", "pos1", "pos2", "list", "reload"})
         });
         this.commandParameters.put("areaname", new CommandParameter[]{
                 new CommandParameter("todo", false, new String[]{"info", "goto", "create", "delete"}),
@@ -78,6 +78,7 @@ public class AreaProtectionCommand extends Command {
         player.sendMessage(AreaProtection.Prefix + "/ap bypass");
         player.sendMessage(AreaProtection.Prefix + "/ap pos1");
         player.sendMessage(AreaProtection.Prefix + "/ap pos2");
+        player.sendMessage(AreaProtection.Prefix + "/ap reload");
         player.sendMessage(AreaProtection.Prefix + "/ap create <name>");
         player.sendMessage(AreaProtection.Prefix + "/ap delete <area_name>");
         player.sendMessage(AreaProtection.Prefix + "/ap flag <area_name> <flag> <true/false>");
