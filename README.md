@@ -6,7 +6,7 @@ Zap-Hosting is a VPS, Rootserver, (Lifetime) Gameserver, Domain & TeamSpeak 3/5 
 
 Get your own **VPS** today here: [Click me](https://zap-hosting.com/schdowvps)
 
-Or your own **Rootserver**: [Click me](https://zap-hosting.com/schdowrootserver)
+Or your own **Rootserver**: [Click me](https://zap-hosting.com/schdowrootserver) 
 
 Special offer:
 Use the code `schdow-10` for a 10% discount
