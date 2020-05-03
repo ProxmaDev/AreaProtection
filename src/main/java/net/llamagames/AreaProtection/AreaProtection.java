@@ -182,7 +182,8 @@ public class AreaProtection extends PluginBase {
         registerSubCommand("reload", new ReloadCommand());
     }
 
-    private void registerDefaultFlags() {
+    public void registerDefaultFlags() {
+        flags.clear();
         if (config.getBoolean("flags.break")) flags.add("break");
         if (config.getBoolean("flags.place")) flags.add("place");
         if (config.getBoolean("flags.interact")) flags.add("interact");
