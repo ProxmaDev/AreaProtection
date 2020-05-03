@@ -104,7 +104,7 @@ public class AreaProtection extends PluginBase {
     @SuppressWarnings("unchecked")
     public void loadAreas() {
         areas.clear();
-        for (Map.Entry<String, Object> map : areaDB.getSection("areas").getAllMap().entrySet()) {
+        for (Map.Entry<String, Object> map : areaDB.getAll().entrySet()) {
             boolean needsUpdate = false;
             String name = map.getKey();
             HashMap<String, Object> area = (HashMap<String, Object>) map.getValue();

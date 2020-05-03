@@ -41,13 +41,13 @@ public class AreaManager {
 
         Config config = AreaProtection.areaDB;
 
-        config.set("areas." + name + ".world", world.getName());
-        config.set("areas." + name + ".pos1x", pos1.x);
-        config.set("areas." + name + ".pos1y", pos1.y);
-        config.set("areas." + name + ".pos1z", pos1.z);
-        config.set("areas." + name + ".pos2x", pos2.x);
-        config.set("areas." + name + ".pos2y", pos2.y);
-        config.set("areas." + name + ".pos2z", pos2.z);
+        config.set(name + ".world", world.getName());
+        config.set(name + ".pos1x", pos1.x);
+        config.set(name + ".pos1y", pos1.y);
+        config.set(name + ".pos1z", pos1.z);
+        config.set(name + ".pos2x", pos2.x);
+        config.set(name + ".pos2y", pos2.y);
+        config.set(name + ".pos2z", pos2.z);
 
         HashMap<String, AreaFlag> areaFlags = new HashMap<>();
         List<String> flags = new ArrayList<>();
@@ -55,7 +55,7 @@ public class AreaManager {
             flags.add(s + ":" + "false");
             areaFlags.put(s, new AreaFlag(s, false));
         }));
-        config.set("areas." + name + ".flags", flags);
+        config.set(name + ".flags", flags);
 
         Area area = new Area(name, pos1, pos2, world, areaFlags);
 
@@ -66,24 +66,24 @@ public class AreaManager {
 
     public static void saveAreaAsync(Area area) {
         CompletableFuture.runAsync(() -> {
-           try {
-               saveArea(area);
-           } catch (Exception ex) {
-               ex.printStackTrace();
-           }
+            try {
+                saveArea(area);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
         });
     }
 
     public static void saveArea(Area area) {
-        AreaProtection.areaDB.set("areas." + area.getName() + ".world", area.getWorld().getName());
-        AreaProtection.areaDB.set("areas." + area.getName() + ".pos1x", area.getPos1().getX());
-        AreaProtection.areaDB.set("areas." + area.getName() + ".pos1y", area.getPos1().getY());
-        AreaProtection.areaDB.set("areas." + area.getName() + ".pos1z", area.getPos1().getZ());
-        AreaProtection.areaDB.set("areas." + area.getName() + ".pos2x", area.getPos2().getX());
-        AreaProtection.areaDB.set("areas." + area.getName() + ".pos2y", area.getPos2().getY());
-        AreaProtection.areaDB.set("areas." + area.getName() + ".pos2z", area.getPos2().getZ());
+        AreaProtection.areaDB.set(area.getName() + ".world", area.getWorld().getName());
+        AreaProtection.areaDB.set(area.getName() + ".pos1x", area.getPos1().getX());
+        AreaProtection.areaDB.set(area.getName() + ".pos1y", area.getPos1().getY());
+        AreaProtection.areaDB.set(area.getName() + ".pos1z", area.getPos1().getZ());
+        AreaProtection.areaDB.set(area.getName() + ".pos2x", area.getPos2().getX());
+        AreaProtection.areaDB.set(area.getName() + ".pos2y", area.getPos2().getY());
+        AreaProtection.areaDB.set(area.getName() + ".pos2z", area.getPos2().getZ());
 
-        AreaProtection.areaDB.set("areas." + area.getName() + ".flags", area.flagsAsStringList());
+        AreaProtection.areaDB.set(area.getName() + ".flags", area.flagsAsStringList());
         AreaProtection.areaDB.save();
     }
 
@@ -91,12 +91,9 @@ public class AreaManager {
         Area area = AreaProtection.instance.getAreaByName(name);
         if (area != null) {
             AreaProtection.areas.remove(area);
+            AreaProtection.areaDB.remove(area.getName());
+            AreaProtection.areaDB.save();
         }
-        Config config = AreaProtection.areaDB;
-        Map<String, Object> map = config.getSection("areas").getAllMap();
-        map.remove(name);
-        config.set("areas", map);
-        config.save();
     }
 
 }

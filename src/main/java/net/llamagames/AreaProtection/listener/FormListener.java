@@ -19,15 +19,17 @@ public class FormListener implements Listener {
             FormWindowCustom form = (FormWindowCustom) event.getWindow();
             Area area = AreaProtection.instance.getAreaByName(form.getTitle());
 
-            if (area != null && form.getResponse() != null) {
+            if (area != null && form.getResponse() != null && AreaProtection.flagPending.containsKey(event.getPlayer().getName())) {
                 HashMap<Integer, String> pending = AreaProtection.flagPending.get(event.getPlayer().getName());
 
                 for (Map.Entry<Integer, String> entry : pending.entrySet()) {
                     area.setAllowed(entry.getValue(), form.getResponse().getToggleResponse(entry.getKey()));
                 }
-            }
 
-            AreaManager.saveAreaAsync(area);
+                AreaProtection.flagPending.remove(event.getPlayer().getName());
+
+                AreaManager.saveAreaAsync(area);
+            }
         }
     }
 
