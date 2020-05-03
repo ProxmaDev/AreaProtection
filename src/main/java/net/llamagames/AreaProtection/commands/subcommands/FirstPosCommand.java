@@ -16,7 +16,7 @@ public class FirstPosCommand extends SubCommand {
         if (sender instanceof Player) {
             Player player = (Player) sender;
             AreaProtection.playersInPosMode.put(player, 0);
-            player.sendMessage(AreaProtection.Prefix + Language.getMessage("set-pos1"));
+            player.sendMessage(Language.get("set-pos1"));
         }
     }
 }

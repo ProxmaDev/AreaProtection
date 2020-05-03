@@ -16,13 +16,13 @@ public class ListCommand extends SubCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (AreaProtection.areas.size() == 0) {
-            sender.sendMessage(AreaProtection.Prefix + Language.getMessage("no-areas"));
+            sender.sendMessage(Language.get("no-areas"));
         } else {
             StringBuilder list = new StringBuilder();
             for (Area area: AreaProtection.areas) {
                 list.append(area.getName()).append(", ");
             }
-            sender.sendMessage(AreaProtection.Prefix + Language.getAndReplace("area-list", list.toString()));
+            sender.sendMessage(Language.getAndReplace("area-list", list.toString()));
         }
     }
 }

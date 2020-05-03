@@ -3,7 +3,10 @@ package net.llamagames.AreaProtection.commands.subcommands;
 import cn.nukkit.command.CommandSender;
 import net.llamagames.AreaProtection.AreaProtection;
 import net.llamagames.AreaProtection.utils.Area;
+import net.llamagames.AreaProtection.utils.AreaFlag;
 import net.llamagames.AreaProtection.utils.Language;
+
+import java.util.HashMap;
 
 public class InfoCommand extends SubCommand {
 
@@ -14,24 +17,33 @@ public class InfoCommand extends SubCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(args.length < 2) {
-            ap.sendSenderUsage(sender);
+            ap.sendUsage(sender);
             return;
         }
         Area area = ap.getAreaByName(args[1]);
         if(area != null) {
-            sender.sendMessage(AreaProtection.Prefix + Language.getAndReplace("info-about", args[1]));
-            sender.sendMessage(AreaProtection.Prefix + Language.getMessage("info-line"));
-            sender.sendMessage(AreaProtection.Prefix + Language.getAndReplace("info-world", area.getWorld().getName()));
-            sender.sendMessage(AreaProtection.Prefix + Language.getAndReplace("info-pos1", area.getPos1().x, area.getPos1().y, area.getPos1().z));
-            sender.sendMessage(AreaProtection.Prefix + Language.getAndReplace("info-pos2", area.getPos2().x, area.getPos2().y, area.getPos2().z));
-            sender.sendMessage(AreaProtection.Prefix + Language.getAndReplace("info-break", area.isBreakAllowed()));
-            sender.sendMessage(AreaProtection.Prefix + Language.getAndReplace("info-place", area.isPlaceAllowed()));
-            sender.sendMessage(AreaProtection.Prefix + Language.getAndReplace("info-interact", area.isInteractAllowed()));
-            sender.sendMessage(AreaProtection.Prefix + Language.getAndReplace("info-pvp", area.isPvpAllowed()));
-            sender.sendMessage(AreaProtection.Prefix + Language.getAndReplace("info-god", area.isGod()));
-            sender.sendMessage(AreaProtection.Prefix + Language.getAndReplace("info-mobspawning", area.isMobSpawnAllowed()));
+            sender.sendMessage( Language.getAndReplace("info-about", args[1]));
+            sender.sendMessage(Language.get("info-line"));
+            sender.sendMessage(Language.getAndReplace("info-world", area.getWorld().getName()));
+            sender.sendMessage(Language.getAndReplace("info-pos1", area.getPos1().x, area.getPos1().y, area.getPos1().z));
+            sender.sendMessage(Language.getAndReplace("info-pos2", area.getPos2().x, area.getPos2().y, area.getPos2().z));
+            sender.sendMessage(Language.getAndReplace("info-flags", formatFlags(area.getFlags())));
         } else {
-            sender.sendMessage(AreaProtection.Prefix + Language.getAndReplace("cant-find-area", args[1]));
+            sender.sendMessage(Language.getAndReplace("cant-find-area", args[1]));
         }
+    }
+
+    public String formatFlags(HashMap<String, AreaFlag> flags) {
+        StringBuilder sb = new StringBuilder();
+
+        flags.values().forEach((areaFlag) -> {
+            if (areaFlag.allowed) {
+                sb.append("§f").append(areaFlag.name).append(": §aenabled§r, ");
+            } else {
+                sb.append("§f").append(areaFlag.name).append(": §cdisabled§r, ");
+            }
+        });
+
+        return sb.toString().substring(0, sb.toString().length() - 2);
     }
 }

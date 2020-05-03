@@ -29,14 +29,18 @@ import cn.nukkit.math.Vector3;
 import cn.nukkit.utils.Config;
 import net.llamagames.AreaProtection.AreaProtection;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public class AreaManager {
 
     public static void createArea(String name, Vector3 pos1, Vector3 pos2, Level world) {
 
-        AreaProtection plugin = AreaProtection.getInstance();
-        Config config = plugin.getConfig();
+        Config config = AreaProtection.areaDB;
+
         config.set("areas." + name + ".world", world.getName());
         config.set("areas." + name + ".pos1x", pos1.x);
         config.set("areas." + name + ".pos1y", pos1.y);
@@ -44,42 +48,54 @@ public class AreaManager {
         config.set("areas." + name + ".pos2x", pos2.x);
         config.set("areas." + name + ".pos2y", pos2.y);
         config.set("areas." + name + ".pos2z", pos2.z);
-        config.set("areas." + name + ".break", true);
-        config.set("areas." + name + ".place", true);
-        config.set("areas." + name + ".interact", true);
-        config.set("areas." + name + ".pvp", true);
-        config.set("areas." + name + ".god", false);
-        config.set("areas." + name + ".mob-spawn", true);
-        config.save();
-        config.reload();
-        plugin.loadAreas();
 
-        plugin.getLogger().info(AreaProtection.Prefix + "New area " + name + " §rcreated.");
+        HashMap<String, AreaFlag> areaFlags = new HashMap<>();
+        List<String> flags = new ArrayList<>();
+        AreaProtection.flags.forEach((s -> {
+            flags.add(s + ":" + "false");
+            areaFlags.put(s, new AreaFlag(s, false));
+        }));
+        config.set("areas." + name + ".flags", flags);
+
+        Area area = new Area(name, pos1, pos2, world, areaFlags);
+
+        AreaProtection.areas.add(area);
+
+        config.save();
     }
 
-    public static void updateFlag(Area area, String key, boolean value) {
-
-        AreaProtection plugin = AreaProtection.getInstance();
-        Config config = plugin.getConfig();
-        config.set("areas." + area.getName() + "." + key, value);
-        config.save();
-        config.reload();
-
-        plugin.getLogger().info(AreaProtection.Prefix + "Set " + key + " for " + area.getName() + " to " + value);
+    public static void saveAreaAsync(Area area) {
+        CompletableFuture.runAsync(() -> {
+           try {
+               saveArea(area);
+           } catch (Exception ex) {
+               ex.printStackTrace();
+           }
+        });
     }
 
-    public static void deleteAreaByName(String name) {
-        AreaProtection plugin = AreaProtection.getInstance();
-        Area area = plugin.getAreaByName(name);
+    public static void saveArea(Area area) {
+        AreaProtection.areaDB.set("areas." + area.getName() + ".pos1x", area.getPos1().getX());
+        AreaProtection.areaDB.set("areas." + area.getName() + ".pos1y", area.getPos1().getY());
+        AreaProtection.areaDB.set("areas." + area.getName() + ".pos1z", area.getPos1().getZ());
+        AreaProtection.areaDB.set("areas." + area.getName() + ".pos2x", area.getPos2().getX());
+        AreaProtection.areaDB.set("areas." + area.getName() + ".pos2y", area.getPos2().getY());
+        AreaProtection.areaDB.set("areas." + area.getName() + ".pos2z", area.getPos2().getZ());
+
+        AreaProtection.areaDB.set("areas." + area.getName() + ".flags", area.flagsAsStringList());
+        AreaProtection.areaDB.save();
+    }
+
+    public static void deleteArea(String name) {
+        Area area = AreaProtection.instance.getAreaByName(name);
         if (area != null) {
             AreaProtection.areas.remove(area);
         }
-        Config config = plugin.getConfig();
+        Config config = AreaProtection.areaDB;
         Map<String, Object> map = config.getSection("areas").getAllMap();
         map.remove(name);
         config.set("areas", map);
         config.save();
-        config.reload();
     }
 
 }

@@ -1,0 +1,16 @@
+# just an example file
+areas:
+  lobby:
+    pos1x: 100
+    pos1y: 100
+    pos1z: 100
+    pos2x: 100
+    pos2y: 100
+    pos2z: 100
+    flags:
+      - "break:false"
+      - "place:false"
+      - "interact:false"
+      - "mob-spawn:false"
+      - "god:false"
+      - "pvp:false"

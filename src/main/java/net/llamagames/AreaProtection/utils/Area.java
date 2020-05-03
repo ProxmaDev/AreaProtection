@@ -28,6 +28,10 @@ import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
 import cn.nukkit.math.Vector3;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 public class Area {
 
     private String name;
@@ -35,25 +39,28 @@ public class Area {
     private Vector3 pos1;
     private Vector3 pos2;
     private Level world;
+    private HashMap<String, AreaFlag> flags;
 
-    private boolean pvp;
+    /*private boolean pvp;
     private boolean god;
     private boolean breakAllowed;
     private boolean place;
     private boolean interact;
-    private boolean mobSpawn;
+    private boolean mobSpawn;*/
 
-    public Area(String name, Vector3 pos1, Vector3 pos2, Level world, boolean breakAllowed, boolean place, boolean interact, boolean pvp, boolean god, boolean mobSpawn) {
+    public Area(String name, Vector3 pos1, Vector3 pos2, Level world, HashMap<String, AreaFlag> flags) {
         this.name = name;
         this.pos1 = pos1;
         this.pos2 = pos2;
         this.world = world;
+        this.flags = flags;
+        /*
         this.breakAllowed = breakAllowed;
         this.place = place;
         this.interact = interact;
         this.pvp = pvp;
         this.god = god;
-        this.mobSpawn = mobSpawn;
+        this.mobSpawn = mobSpawn;*/
     }
 
     public String getName() {
@@ -86,52 +93,16 @@ public class Area {
         return world;
     }
 
-    public boolean isBreakAllowed() {
-        return breakAllowed;
+    public boolean isAllowed(String flag) {
+        return flags.get(flag).allowed;
     }
 
-    public boolean isInteractAllowed() {
-        return interact;
+    public void setAllowed(String flag, boolean is) {
+        flags.get(flag).allowed = is;
     }
 
-    public boolean isPlaceAllowed() {
-        return place;
-    }
-
-    public boolean isPvpAllowed() {
-        return pvp;
-    }
-
-    public boolean isGod() {
-        return god;
-    }
-
-    public void setBreakAllowed(boolean breakAllowed) {
-        this.breakAllowed = breakAllowed;
-    }
-
-    public void setInteract(boolean interact) {
-        this.interact = interact;
-    }
-
-    public void setPlace(boolean place) {
-        this.place = place;
-    }
-
-    public void setPvp(boolean pvp) {
-        this.pvp = pvp;
-    }
-
-    public void setGod(boolean god) {
-        this.god = god;
-    }
-
-    public boolean isMobSpawnAllowed() {
-        return mobSpawn;
-    }
-
-    public void setMobSpawn(boolean mobSpawn) {
-        this.mobSpawn = mobSpawn;
+    public HashMap<String, AreaFlag> getFlags() {
+        return flags;
     }
 
     public void setWorld(Level world) {
@@ -144,5 +115,11 @@ public class Area {
 
     public void setPos2(Vector3 pos2) {
         this.pos2 = pos2;
+    }
+
+    public List<String> flagsAsStringList() {
+        List<String> list = new ArrayList<>();
+        flags.values().forEach((areaFlag -> list.add(areaFlag.name + ":" + areaFlag.allowed)));
+        return list;
     }
 }

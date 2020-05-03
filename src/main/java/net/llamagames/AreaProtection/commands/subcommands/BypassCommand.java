@@ -18,10 +18,10 @@ public class BypassCommand extends SubCommand {
 
             if (AreaProtection.bypassPlayers.contains(player)) {
                 AreaProtection.bypassPlayers.remove(player);
-                player.sendMessage(AreaProtection.Prefix + Language.getMessage("not-longer-bypassing"));
+                player.sendMessage(Language.get("not-longer-bypassing"));
             } else {
                 AreaProtection.bypassPlayers.add(player);
-                player.sendMessage(AreaProtection.Prefix + Language.getMessage("bypassing-now"));
+                player.sendMessage(Language.get("bypassing-now"));
             }
 
         }

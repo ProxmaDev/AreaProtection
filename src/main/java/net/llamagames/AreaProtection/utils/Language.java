@@ -9,51 +9,45 @@ import java.util.Map;
 public class Language {
 
     public static HashMap<String, String> messages = new HashMap<>();
+    public static String prefix;
 
     public static void init() {
-        AreaProtection.getInstance().saveResource("messages.yml");
-        Config m = new Config(AreaProtection.getInstance().getDataFolder() + "/messages.yml");
+        messages.clear();
+        AreaProtection.instance.saveResource("messages.yml");
+        Config m = new Config(AreaProtection.instance.getDataFolder() + "/messages.yml");
         for (Map.Entry<String, Object> map : m.getAll().entrySet()) {
             String key = map.getKey();
-            if (map.getValue() instanceof String) {
-                String val = (String) map.getValue();
-                messages.put(key, val);
-            }
+            if (map.getValue() instanceof String) messages.put(key, (String) map.getValue());
         }
+        prefix = m.getString("prefix");
     }
 
-    public static String getAndReplace(String key, String... replacements) {
-        String message = getMessage(key);
+    public static String getAndReplace(String key, Object... replacements) {
+        String message = get(key);
         int i = 0;
-        for (String replacement : replacements) {
-            message = message.replace("[" + i + "]", replacement);
-            i++;
-        }
-        return message;
-    }
-
-    public static String getAndReplace(String key, double... replacements) {
-        String message = getMessage(key);
-        int i = 0;
-        for (double replacement : replacements) {
+        for (Object replacement : replacements) {
             message = message.replace("[" + i + "]", String.valueOf(replacement));
             i++;
         }
         return message;
     }
 
-    public static String getAndReplace(String key, boolean... replacements) {
-        String message = getMessage(key);
+    public static String getAndReplaceNoPrefix(String key, Object... replacements) {
+        String message = getNoPrefix(key);
         int i = 0;
-        for (boolean replacement : replacements) {
+        for (Object replacement : replacements) {
             message = message.replace("[" + i + "]", String.valueOf(replacement));
             i++;
         }
         return message;
     }
 
-    public static String getMessage(String key) {
-        return messages.getOrDefault(key, "null");
+    public static String get(String key) {
+        return prefix.replace("&", "ยง") + messages.getOrDefault(key, "null").replace("&", "ยง");
+    }
+
+    public static String getNoPrefix(String key) {
+        return messages.getOrDefault(key, "null").replace("&", "ยง");
     }
 
 }

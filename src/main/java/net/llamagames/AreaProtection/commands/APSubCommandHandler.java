@@ -14,7 +14,7 @@ public class APSubCommandHandler {
         if (subcommands.containsKey(name)) {
             subcommands.get(name).execute(sender, args);
         } else {
-            AreaProtection.getInstance().sendSenderUsage(sender);
+            AreaProtection.getInstance().sendUsage(sender);
         }
     }
 

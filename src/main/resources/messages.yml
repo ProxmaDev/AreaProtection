@@ -34,12 +34,7 @@ info-line: "----------------------------------"
 info-world: "World: [0]"
 info-pos1: "1. Position: X: [0], Y: [1], Z: [2]"
 info-pos2: "2. Position: X: [0], Y: [1], Z: [2]"
-info-break: "Break: [0]"
-info-place: "Place: [0]"
-info-interact: "Interact: [0]"
-info-pvp: "PvP: [0]"
-info-god: "God: [0]"
-info-mobspawning: "Mob Spawning: [0]"
+info-flags: "Flags: [0]"
 
 # /ap list
 no-areas: "There are no areas to list."
@@ -57,3 +52,6 @@ pos2-set: "2nd Position set."
 
 # /ap delete
 area-deleted: "Area [0] successfully deleted."
+
+# /ap reload
+ap-reloaded: "AreaProtection reloaded!"

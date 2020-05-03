@@ -32,37 +32,39 @@ import cn.nukkit.level.Position;
 import cn.nukkit.math.Vector3;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.Config;
-import cn.nukkit.utils.ConfigSection;
 import net.llamagames.AreaProtection.commands.AreaProtectionCommand;
 import net.llamagames.AreaProtection.commands.subcommands.*;
 import net.llamagames.AreaProtection.commands.APSubCommandHandler;
 import net.llamagames.AreaProtection.listener.BlockListener;
 import net.llamagames.AreaProtection.listener.EntityListener;
+import net.llamagames.AreaProtection.listener.FormListener;
 import net.llamagames.AreaProtection.utils.Area;
+import net.llamagames.AreaProtection.utils.AreaFlag;
 import net.llamagames.AreaProtection.utils.AreaManager;
 import net.llamagames.AreaProtection.utils.Language;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class AreaProtection extends PluginBase {
 
-    public static String Prefix;
     public static HashMap<Player, Position> firstPoses = new HashMap<>();
     public static HashMap<Player, Position> secondPoses = new HashMap<>();
     public static HashMap<Player, Integer> playersInPosMode = new HashMap<Player, Integer>();
     public static ArrayList<Area> areas = new ArrayList<>();
     public static ArrayList<Player> bypassPlayers = new ArrayList<>();
 
-    public static ArrayList<String> flags = new ArrayList<String>(Arrays.asList("break", "place", "interact", "pvp", "god", "mob-spawn"));
+    public static HashMap<String, HashMap<Integer, String>> flagPending = new HashMap<>();
+
+    public static Config areaDB;
+    public static Config config;
+
+    public static ArrayList<String> flags = new ArrayList<>();
 
     public static HashMap<Player, Long> messageCooldowns = new HashMap<>();
 
     public static AreaProtection instance;
 
-    private int version = 1;
+    private int version = 2;
 
     @Override
     public void onLoad() {
@@ -75,28 +77,35 @@ public class AreaProtection extends PluginBase {
     }
 
     private void init() {
+        areaDB = new Config(getDataFolder() + "/areas.yml", Config.YAML);
         saveDefaultConfig();
-        if (!getConfig().exists("version")) {
-            updateVersion();
-        } else {
-            if (getConfig().getInt("version") != version) {
-                updateVersion();
-            }
+        config = getConfig();
+        registerDefaultFlags();
+
+        if (getConfig().exists("version")) {
+            getLogger().info("§cIMPORTANT");
+            getLogger().info("§cCan't load AreaProtection!");
+            getLogger().info("§cPlease delete your entire AreaProtection plugin folder.");
+            getLogger().info("§cThe way how AreaProtection works has changed a lot.");
+            getLogger().info("§cIMPORTANT");
+            getServer().getPluginManager().disablePlugin(instance);
+            return;
         }
+
         loadAreas();
         Language.init();
-        Prefix = Language.getMessage("prefix");
         registerCommands();
         getServer().getPluginManager().registerEvents(new BlockListener(this), this);
         getServer().getPluginManager().registerEvents(new EntityListener(this), this);
+        getServer().getPluginManager().registerEvents(new FormListener(), this);
     }
-
 
 
     @SuppressWarnings("unchecked")
     public void loadAreas() {
         areas.clear();
-        for (Map.Entry<String, Object> map: getConfig().getSection("areas").getAllMap().entrySet()) {
+        for (Map.Entry<String, Object> map : areaDB.getSection("areas").getAllMap().entrySet()) {
+            boolean needsUpdate = false;
             String name = map.getKey();
             HashMap<String, Object> area = (HashMap<String, Object>) map.getValue();
 
@@ -107,14 +116,32 @@ public class AreaProtection extends PluginBase {
             double xx = (double) area.get("pos2x");
             double yy = (double) area.get("pos2y");
             double zz = (double) area.get("pos2z");
-            boolean breakAllowed = (boolean) area.get("break");
-            boolean place = (boolean) area.get("place");
-            boolean interact = (boolean) area.get("interact");
-            boolean pvp = (boolean) area.get("pvp");
-            boolean god = (boolean) area.get("god");
-            boolean mobspawn = (boolean) area.get("mob-spawn");
 
-            areas.add(new Area(name, new Vector3(x, y, z), new Vector3(xx, yy, zz), getServer().getLevelByName(world), breakAllowed, place, interact, pvp, god, mobspawn));
+            HashMap<String, AreaFlag> areaFlags = new HashMap<>();
+            List<String> rawFlags = (List<String>) area.get("flags");
+
+            for (String s : flags) {
+                if (!rawFlags.contains(s + ":false") && !rawFlags.contains(s + ":true")) {
+                    rawFlags.add(s + ":false");
+                    needsUpdate = true;
+                }
+            }
+
+            rawFlags.forEach((s -> {
+                String[] i = s.split(":");
+                boolean allowed = false;
+                if (i[1].equalsIgnoreCase("true")) allowed = true;
+
+                if (flags.contains(i[0])) areaFlags.put(i[0], new AreaFlag(i[0], allowed));
+            }));
+
+            Area newArea = new Area(name, new Vector3(x, y, z), new Vector3(xx, yy, zz), getServer().getLevelByName(world), areaFlags);
+
+            areas.add(newArea);
+
+            if (needsUpdate) {
+                AreaManager.saveAreaAsync(newArea);
+            }
         }
     }
 
@@ -123,29 +150,20 @@ public class AreaProtection extends PluginBase {
     }
 
     public void sendUsage(Player player) {
-        sendSenderUsage(player);
-        /*player.sendMessage(AreaProtection.Prefix + "/ap list");
-        player.sendMessage(AreaProtection.Prefix + "/ap info <area_name>");
-        player.sendMessage(AreaProtection.Prefix + "/ap goto <area_name>");
-        player.sendMessage(AreaProtection.Prefix + "/ap bypass");
-        player.sendMessage(AreaProtection.Prefix + "/ap pos1");
-        player.sendMessage(AreaProtection.Prefix + "/ap pos2");
-        player.sendMessage(AreaProtection.Prefix + "/ap create <name>");
-        player.sendMessage(AreaProtection.Prefix + "/ap delete <area_name>");
-        player.sendMessage(AreaProtection.Prefix + "/ap flag <area_name> <flag> <true/false>");*/
+        this.sendUsage((CommandSender) player);
     }
 
-    public void sendSenderUsage(CommandSender sender) {
-        sender.sendMessage(AreaProtection.Prefix + "/ap list");
-        sender.sendMessage(AreaProtection.Prefix + "/ap info <area_name>");
-        sender.sendMessage(AreaProtection.Prefix + "/ap goto <area_name>");
-        sender.sendMessage(AreaProtection.Prefix + "/ap bypass");
-        sender.sendMessage(AreaProtection.Prefix + "/ap pos1");
-        sender.sendMessage(AreaProtection.Prefix + "/ap pos2");
-        sender.sendMessage(AreaProtection.Prefix + "/ap reload");
-        sender.sendMessage(AreaProtection.Prefix + "/ap create <name>");
-        sender.sendMessage(AreaProtection.Prefix + "/ap delete <area_name>");
-        sender.sendMessage(AreaProtection.Prefix + "/ap flag <area_name> <flag> <true/false>");
+    public void sendUsage(CommandSender sender) {
+        sender.sendMessage(Language.prefix + "/ap list");
+        sender.sendMessage(Language.prefix + "/ap info <area_name>");
+        sender.sendMessage(Language.prefix + "/ap goto <area_name>");
+        sender.sendMessage(Language.prefix + "/ap bypass");
+        sender.sendMessage(Language.prefix + "/ap pos1");
+        sender.sendMessage(Language.prefix + "/ap pos2");
+        sender.sendMessage(Language.prefix + "/ap reload");
+        sender.sendMessage(Language.prefix + "/ap create <name>");
+        sender.sendMessage(Language.prefix + "/ap delete <area_name>");
+        sender.sendMessage(Language.prefix + "/ap flag <area_name> <flag> <true/false>");
     }
 
     private void registerCommands() {
@@ -164,35 +182,20 @@ public class AreaProtection extends PluginBase {
         registerSubCommand("reload", new ReloadCommand());
     }
 
-    private void updateVersion() {
-        getLogger().alert("Config is outdated!");
-        getLogger().info("Updating config to version " + version + "...");
-        if (!getConfig().exists("version")) {
-            getConfig().set("version", version);
-        }
-        if (getConfig().exists("areas")) {
-            getLogger().info("Existing areas found. updating...");
-            for (Map.Entry<String, Object> map: getConfig().getSection("areas").getAllMap().entrySet()) {
-                String name = map.getKey();
-                boolean updated = false;
-
-                if (!getConfig().exists("areas." + name + ".mob-spawn")) {
-                    getConfig().set("areas." + name + ".mob-spawn", false);
-                    updated = true;
-                }
-                if (updated) {
-                    getLogger().info("Updated area " + name + ".");
-                }
-                getConfig().save();
-                getConfig().reload();
-            }
-        }
+    private void registerDefaultFlags() {
+        if (config.getBoolean("flags.break")) flags.add("break");
+        if (config.getBoolean("flags.place")) flags.add("place");
+        if (config.getBoolean("flags.interact")) flags.add("interact");
+        if (config.getBoolean("flags.pvp")) flags.add("pvp");
+        if (config.getBoolean("flags.god")) flags.add("god");
+        if (config.getBoolean("flags.mob-spawn")) flags.add("mob-spawn");
+        if (config.getBoolean("flags.explosion")) flags.add("explosion");
     }
 
     // API Stuff (it's in the main because the api is not so big.)
     public Area getAreaByPos(Position position) {
 
-        for(Area area: areas) {
+        for (Area area : areas) {
             if (area.isInArea(position)) {
                 return area;
             }
@@ -203,8 +206,8 @@ public class AreaProtection extends PluginBase {
 
     public Area getAreaByName(String name) {
 
-        for (Area area: areas) {
-            if(area.getName().equalsIgnoreCase(name)) {
+        for (Area area : areas) {
+            if (area.getName().equalsIgnoreCase(name)) {
                 return area;
             }
         }
@@ -217,34 +220,16 @@ public class AreaProtection extends PluginBase {
     }
 
     public void deleteArea(String name) {
-        AreaManager.deleteAreaByName(name);
+        AreaManager.deleteArea(name);
     }
 
     public void setFlagOfArea(Area area, String flag, boolean value) {
-        if (flags.contains(flag)) {
-            AreaManager.updateFlag(area, flag, value);
-        } else {
-            getLogger().info("API ERROR: invalid flag: " + "\"" + flag + "\"");
-        }
+        area.setAllowed(flag, value);
+        AreaManager.saveAreaAsync(area);
     }
 
     public void registerSubCommand(String name, SubCommand subCommand) {
         APSubCommandHandler.registerSubCommand(name, subCommand);
-    }
-
-    @Deprecated
-    public void reloadArea(Area area) {
-        getLogger().info("§cWARNING: reloadArea() is deprecated and will be removed soon.");
-        getLogger().info("§cWARNING: A plugin/addon is still using this method.");
-        /*
-        Config c = getConfig();
-        String aP = "areas." + area.getName();
-        area.setBreakAllowed(c.getBoolean(aP + ".break"));
-        area.setPlace(c.getBoolean(aP + ".place"));
-        area.setInteract(c.getBoolean(aP + ".interact"));
-        area.setPvp(c.getBoolean(aP + ".pvp"));
-        area.setGod(c.getBoolean(aP + ".god"));
-        area.setMobSpawn(c.getBoolean(aP + ".mobspawn"))*/
     }
 
     public void registerMessage(String key, String message) {

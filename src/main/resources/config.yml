@@ -1,2 +1,10 @@
-# DO NOT CHANGE VERSION!
-version: 1
+# Here you can disable and enable flags you want to use on your server
+# If you don't need a flag just set it to false.
+flags:
+  break: true
+  place: true
+  interact: true
+  explosion: true
+  mob-spawn: true
+  pvp: true
+  god: true

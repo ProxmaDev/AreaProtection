@@ -56,11 +56,11 @@ public class BlockListener implements Listener {
         if(AreaProtection.playersInPosMode.containsKey(event.getPlayer())) {
             if(AreaProtection.playersInPosMode.get(event.getPlayer()) == 0) {
                 AreaProtection.firstPoses.put(event.getPlayer(), event.getBlock().getLocation());
-                event.getPlayer().sendMessage(AreaProtection.Prefix + Language.getMessage("pos1-set"));
+                event.getPlayer().sendMessage(Language.get("pos1-set"));
                 event.setCancelled(true);
             } else if(AreaProtection.playersInPosMode.get(event.getPlayer()) == 1) {
                 AreaProtection.secondPoses.put(event.getPlayer(), event.getBlock().getLocation());
-                event.getPlayer().sendMessage(AreaProtection.Prefix + Language.getMessage("pos2-set"));
+                event.getPlayer().sendMessage(Language.get("pos2-set"));
                 event.setCancelled(true);
             }
             AreaProtection.playersInPosMode.remove(event.getPlayer());
@@ -68,10 +68,10 @@ public class BlockListener implements Listener {
         }
         Area area = plugin.getAreaByPos(event.getBlock().getLocation());
         if(area != null) {
-            if(!area.isBreakAllowed()) {
+            if(!area.isAllowed("break")) {
                 if(!hasBypassPerms(event.getPlayer())) {
                     event.setCancelled();
-                    notify(event.getPlayer(), Language.getMessage("no-break"));
+                    notify(event.getPlayer(), Language.get("no-break"));
                 }
             }
         }
@@ -83,11 +83,11 @@ public class BlockListener implements Listener {
         if(AreaProtection.playersInPosMode.containsKey(event.getPlayer())) {
             if(AreaProtection.playersInPosMode.get(event.getPlayer()) == 0) {
                 AreaProtection.firstPoses.put(event.getPlayer(), event.getBlock().getLocation());
-                event.getPlayer().sendMessage(AreaProtection.Prefix + Language.getMessage("pos1-set"));
+                event.getPlayer().sendMessage(Language.get("pos1-set"));
                 event.setCancelled(true);
             } else if(AreaProtection.playersInPosMode.get(event.getPlayer()) == 1) {
                 AreaProtection.secondPoses.put(event.getPlayer(), event.getBlock().getLocation());
-                event.getPlayer().sendMessage(AreaProtection.Prefix + Language.getMessage("pos2-set"));
+                event.getPlayer().sendMessage(Language.get("pos2-set"));
                 event.setCancelled(true);
             }
             AreaProtection.playersInPosMode.remove(event.getPlayer());
@@ -96,10 +96,10 @@ public class BlockListener implements Listener {
 
         Area area = plugin.getAreaByPos(event.getBlock().getLocation());
         if(area != null) {
-            if(!area.isPlaceAllowed()) {
+            if(!area.isAllowed("place")) {
                 if(!hasBypassPerms(event.getPlayer())) {
                     event.setCancelled(true);
-                    notify(event.getPlayer(), Language.getMessage("no-place"));
+                    notify(event.getPlayer(), Language.get("no-place"));
                 }
             }
         }
@@ -110,17 +110,17 @@ public class BlockListener implements Listener {
     public void onInteract(PlayerInteractEvent event) {
         Area area = plugin.getAreaByPos(event.getBlock().getLocation());
         if(area != null) {
-            if(!area.isInteractAllowed()) {
+            if(!area.isAllowed("interact")) {
                 if(!hasBypassPerms(event.getPlayer())) {
                     event.setCancelled();
-                    notify(event.getPlayer(), Language.getMessage("no-interact"));
+                    notify(event.getPlayer(), Language.get("no-interact"));
                 }
             }
-            if (!area.isPlaceAllowed()) {
+            if (!area.isAllowed("place")) {
                 if (!hasBypassPerms(event.getPlayer())) {
                     if (event.getItem().getId() == ItemID.BUCKET) {
                         event.setCancelled(true);
-                        notify(event.getPlayer(), Language.getMessage("no-place"));
+                        notify(event.getPlayer(), Language.get("no-place"));
                     }
                 }
             }
@@ -132,7 +132,7 @@ public class BlockListener implements Listener {
         if(event.getEntity() instanceof Player) {
                 Area playerArea = plugin.getAreaByPos(event.getEntity().getPosition());
                 if(playerArea != null) {
-                    if(playerArea.isGod()) {
+                    if(playerArea.isAllowed("god")) {
                         event.setCancelled();
                     }
                 }
@@ -148,10 +148,10 @@ public class BlockListener implements Listener {
             Area playerArea = plugin.getAreaByPos(player.getPosition());
 
             if(playerArea != null) {
-                if(!playerArea.isPvpAllowed()) {
+                if(!playerArea.isAllowed("pvp")) {
                     if(!hasBypassPerms(damager)) {
                         event.setCancelled();
-                        notify(damager, Language.getMessage("no-pvp"));
+                        notify(damager, Language.get("no-pvp"));
                     }
                 }
             } else {
@@ -159,10 +159,10 @@ public class BlockListener implements Listener {
                 Area damagerArea = plugin.getAreaByPos(damager.getPosition());
 
                 if(damagerArea != null) {
-                    if(!damagerArea.isPvpAllowed()) {
+                    if(!damagerArea.isAllowed("pvp")) {
                         if(!hasBypassPerms(damager)) {
                             event.setCancelled();
-                            notify(damager, Language.getMessage("no-pvp"));
+                            notify(damager, Language.get("no-pvp"));
                         }
                     }
                 }
@@ -172,11 +172,7 @@ public class BlockListener implements Listener {
     }
 
     public boolean hasBypassPerms(Player player) {
-        if(AreaProtection.bypassPlayers.contains(player)) {
-            return true;
-        } else {
-            return false;
-        }
+        return AreaProtection.bypassPlayers.contains(player);
     }
 
     public void notify(Player player, String message) {
@@ -187,11 +183,11 @@ public class BlockListener implements Listener {
             } else {
                 AreaProtection.messageCooldowns.remove(player);
                 AreaProtection.messageCooldowns.put(player, System.currentTimeMillis() + 2500);
-                player.sendMessage(AreaProtection.Prefix + message);
+                player.sendMessage(message);
             }
         } else {
             AreaProtection.messageCooldowns.put(player, System.currentTimeMillis() + 2500);
-            player.sendMessage(AreaProtection.Prefix + message);
+            player.sendMessage(message);
         }
     }
 

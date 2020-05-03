@@ -29,10 +29,8 @@ import cn.nukkit.command.Command;
 import cn.nukkit.command.CommandSender;
 import cn.nukkit.command.data.CommandParamType;
 import cn.nukkit.command.data.CommandParameter;
-import cn.nukkit.math.Vector3;
 import net.llamagames.AreaProtection.AreaProtection;
-import net.llamagames.AreaProtection.utils.Area;
-import net.llamagames.AreaProtection.utils.AreaManager;
+import net.llamagames.AreaProtection.utils.Language;
 
 public class AreaProtectionCommand extends Command {
 
@@ -46,14 +44,8 @@ public class AreaProtectionCommand extends Command {
                 new CommandParameter("todo", false, new String[]{"bypass", "pos1", "pos2", "list", "reload"})
         });
         this.commandParameters.put("areaname", new CommandParameter[]{
-                new CommandParameter("todo", false, new String[]{"info", "goto", "create", "delete"}),
+                new CommandParameter("todo", false, new String[]{"info", "goto", "create", "delete", "flag"}),
                 new CommandParameter("area", CommandParamType.STRING, false)
-        });
-        this.commandParameters.put("flag", new CommandParameter[]{
-                new CommandParameter("todo", false, new String[]{"flag"}),
-                new CommandParameter("area", CommandParamType.STRING, false),
-                new CommandParameter("flag", false, new String[]{"break", "place", "pvp", "interact", "god", "mob-spawn"}),
-                new CommandParameter("bool", false, new String[]{"true", "false"})
         });
     }
 
@@ -63,7 +55,7 @@ public class AreaProtectionCommand extends Command {
             return false;
         }
         if (args.length < 1) {
-            plugin.sendSenderUsage(sender);
+            plugin.sendUsage(sender);
             return false;
         }
         APSubCommandHandler.runSubCommand(args[0], sender, args);
@@ -72,15 +64,6 @@ public class AreaProtectionCommand extends Command {
 
     @Deprecated
     public void sendUsage(Player player) {
-        player.sendMessage(AreaProtection.Prefix + "/ap list");
-        player.sendMessage(AreaProtection.Prefix + "/ap info <area_name>");
-        player.sendMessage(AreaProtection.Prefix + "/ap goto <area_name>");
-        player.sendMessage(AreaProtection.Prefix + "/ap bypass");
-        player.sendMessage(AreaProtection.Prefix + "/ap pos1");
-        player.sendMessage(AreaProtection.Prefix + "/ap pos2");
-        player.sendMessage(AreaProtection.Prefix + "/ap reload");
-        player.sendMessage(AreaProtection.Prefix + "/ap create <name>");
-        player.sendMessage(AreaProtection.Prefix + "/ap delete <area_name>");
-        player.sendMessage(AreaProtection.Prefix + "/ap flag <area_name> <flag> <true/false>");
+        AreaProtection.instance.sendUsage(player);
     }
 }

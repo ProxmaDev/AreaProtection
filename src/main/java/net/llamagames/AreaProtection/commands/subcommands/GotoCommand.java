@@ -15,7 +15,7 @@ public class GotoCommand extends SubCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(args.length < 2) {
-            ap.sendSenderUsage(sender);
+            ap.sendUsage(sender);
             return;
         }
         if (sender instanceof Player) {
@@ -23,9 +23,9 @@ public class GotoCommand extends SubCommand {
             Area area = ap.getAreaByName(args[1]);
             if (area != null) {
                 player.teleport(area.getPos1());
-                player.sendMessage(AreaProtection.Prefix + Language.getAndReplace("area-teleported", args[1]));
+                player.sendMessage(Language.getAndReplace("area-teleported", args[1]));
             } else {
-                player.sendMessage(AreaProtection.Prefix + Language.getAndReplace("cant-find-area", args[1]));
+                player.sendMessage(Language.getAndReplace("cant-find-area", args[1]));
             }
         }
     }
