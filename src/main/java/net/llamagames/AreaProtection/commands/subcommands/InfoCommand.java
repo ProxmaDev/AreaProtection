@@ -24,7 +24,7 @@ public class InfoCommand extends SubCommand {
         if(area != null) {
             sender.sendMessage( Language.getAndReplace("info-about", args[1]));
             sender.sendMessage(Language.get("info-line"));
-            sender.sendMessage(Language.getAndReplace("info-world", area.getWorld().getName()));
+            sender.sendMessage(Language.getAndReplace("info-world", area.getWorld()));
             sender.sendMessage(Language.getAndReplace("info-pos1", area.getPos1().x, area.getPos1().y, area.getPos1().z));
             sender.sendMessage(Language.getAndReplace("info-pos2", area.getPos2().x, area.getPos2().y, area.getPos2().z));
             sender.sendMessage(Language.getAndReplace("info-flags", formatFlags(area.getFlags())));

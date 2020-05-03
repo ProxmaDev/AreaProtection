@@ -38,29 +38,15 @@ public class Area {
 
     private Vector3 pos1;
     private Vector3 pos2;
-    private Level world;
+    private String world;
     private HashMap<String, AreaFlag> flags;
 
-    /*private boolean pvp;
-    private boolean god;
-    private boolean breakAllowed;
-    private boolean place;
-    private boolean interact;
-    private boolean mobSpawn;*/
-
-    public Area(String name, Vector3 pos1, Vector3 pos2, Level world, HashMap<String, AreaFlag> flags) {
+    public Area(String name, Vector3 pos1, Vector3 pos2, String world, HashMap<String, AreaFlag> flags) {
         this.name = name;
         this.pos1 = pos1;
         this.pos2 = pos2;
         this.world = world;
         this.flags = flags;
-        /*
-        this.breakAllowed = breakAllowed;
-        this.place = place;
-        this.interact = interact;
-        this.pvp = pvp;
-        this.god = god;
-        this.mobSpawn = mobSpawn;*/
     }
 
     public String getName() {
@@ -68,9 +54,8 @@ public class Area {
     }
 
     public boolean isInArea(Position check) {
-        if(check.getLevel() != world) {
-            return false;
-        }
+        if(!check.getLevel().getName().equalsIgnoreCase(world)) return false;
+
         double minX = Math.min(pos1.x, pos2.x);
         double maxX = Math.max(pos1.x, pos2.x);
         double minY = Math.min(pos1.y, pos2.y);
@@ -89,7 +74,7 @@ public class Area {
         return pos2;
     }
 
-    public Level getWorld() {
+    public String getWorld() {
         return world;
     }
 
@@ -105,7 +90,7 @@ public class Area {
         return flags;
     }
 
-    public void setWorld(Level world) {
+    public void setWorld(String world) {
         this.world = world;
     }
 

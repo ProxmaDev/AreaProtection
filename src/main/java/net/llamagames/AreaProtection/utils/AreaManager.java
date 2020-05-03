@@ -57,7 +57,7 @@ public class AreaManager {
         }));
         config.set(name + ".flags", flags);
 
-        Area area = new Area(name, pos1, pos2, world, areaFlags);
+        Area area = new Area(name, pos1, pos2, world.getName(), areaFlags);
 
         AreaProtection.areas.add(area);
 
@@ -77,7 +77,7 @@ public class AreaManager {
     }
 
     public static void saveArea(Area area) {
-        AreaProtection.areaDB.set(area.getName() + ".world", area.getWorld().getName());
+        AreaProtection.areaDB.set(area.getName() + ".world", area.getWorld());
         AreaProtection.areaDB.set(area.getName() + ".pos1x", area.getPos1().getX());
         AreaProtection.areaDB.set(area.getName() + ".pos1y", area.getPos1().getY());
         AreaProtection.areaDB.set(area.getName() + ".pos1z", area.getPos1().getZ());

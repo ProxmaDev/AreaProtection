@@ -135,9 +135,7 @@ public class AreaProtection extends PluginBase {
                 if (flags.contains(i[0])) areaFlags.put(i[0], new AreaFlag(i[0], allowed));
             }));
 
-            if (getServer().isLevelLoaded(world)) getServer().loadLevel(world);
-
-            Area newArea = new Area(name, new Vector3(x, y, z), new Vector3(xx, yy, zz), getServer().getLevelByName(world), areaFlags);
+            Area newArea = new Area(name, new Vector3(x, y, z), new Vector3(xx, yy, zz), world, areaFlags);
 
             areas.add(newArea);
 
