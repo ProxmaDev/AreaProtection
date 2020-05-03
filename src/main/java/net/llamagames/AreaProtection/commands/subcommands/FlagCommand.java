@@ -17,7 +17,7 @@ public class FlagCommand extends SubCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if (sender.isPlayer()) {
-            if (args.length >= 1) {
+            if (args.length >= 2) {
                 Area area = ap.getAreaByName(args[1]);
                 if (area != null) {
                     FormManager.sendFlagForm((Player) sender, area);

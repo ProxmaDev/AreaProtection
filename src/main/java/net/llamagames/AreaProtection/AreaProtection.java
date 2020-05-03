@@ -165,7 +165,7 @@ public class AreaProtection extends PluginBase {
         sender.sendMessage(Language.prefix + "/ap reload");
         sender.sendMessage(Language.prefix + "/ap create <name>");
         sender.sendMessage(Language.prefix + "/ap delete <area_name>");
-        sender.sendMessage(Language.prefix + "/ap flag <area_name> <flag> <true/false>");
+        sender.sendMessage(Language.prefix + "/ap flag <area_name>");
     }
 
     private void registerCommands() {
