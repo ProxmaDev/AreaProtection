@@ -6,7 +6,7 @@ Zap-Hosting is a VPS, Rootserver, (Lifetime) Gameserver, Domain & TeamSpeak 3/5 
 
 Get your own **VPS** today here: [Click me](https://zap-hosting.com/schdowvps)
 
-Or your own **Rootserver**: [Click me](https://zap-hosting.com/schdowrootserver)
+Or your own **Rootserver**: [Click me](https://zap-hosting.com/schdowrootserver) 
 
 Special offer:
 Use the code `schdow-10` for a 10% discount
@@ -21,7 +21,7 @@ AreaProtection: A simple protection plugin for Nukkit servers.
 # Only for simple protection.
 This Plugin is only made for simple protection. It's not thought for selling areas or making normal players able to protect something.
 It's made for the admins.
-
+ 
 # Download
 You can download AreaProtection at Nukkit resources: https://nukkitx.com/resources/areaprotection.281/
 
