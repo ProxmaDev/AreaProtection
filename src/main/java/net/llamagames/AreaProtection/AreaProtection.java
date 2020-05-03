@@ -195,7 +195,7 @@ public class AreaProtection extends PluginBase {
         if (config.getBoolean("flags.explosion")) flags.add("explosion");
     }
 
-    // API Stuff (it's in the main because the api is not so big.)
+    // API stuff
     public Area getAreaByPos(Position position) {
 
         for (Area area : areas) {
@@ -218,8 +218,8 @@ public class AreaProtection extends PluginBase {
         return null;
     }
 
-    public void createArea(String name, Vector3 pos1, Vector3 pos2, Level world) {
-        AreaManager.createArea(name, pos1, pos2, world);
+    public Area createArea(String name, Vector3 pos1, Vector3 pos2, Level world) {
+        return AreaManager.createArea(name, pos1, pos2, world);
     }
 
     public void deleteArea(String name) {

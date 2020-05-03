@@ -37,7 +37,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class AreaManager {
 
-    public static void createArea(String name, Vector3 pos1, Vector3 pos2, Level world) {
+    public static Area createArea(String name, Vector3 pos1, Vector3 pos2, Level world) {
 
         Config config = AreaProtection.areaDB;
 
@@ -62,6 +62,8 @@ public class AreaManager {
         AreaProtection.areas.add(area);
 
         config.save();
+
+        return area;
     }
 
     public static void saveAreaAsync(Area area) {
