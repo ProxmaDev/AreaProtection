@@ -22,7 +22,7 @@ public class ListCommand extends SubCommand {
             for (Area area: AreaProtection.areas) {
                 list.append(area.getName()).append(", ");
             }
-            sender.sendMessage(Language.getAndReplace("area-list", list.toString()));
+            sender.sendMessage(Language.getAndReplace("area-list", list.toString().substring(0, list.toString().length() - 2)));
         }
     }
 }
