@@ -15,6 +15,7 @@ public class ReloadCommand extends SubCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         Language.init();
+        AreaProtection.areaDB.reload();
         AreaProtection.getInstance().registerDefaultFlags();
         AreaProtection.getInstance().loadAreas();
         sender.sendMessage(Language.get("ap-reloaded"));

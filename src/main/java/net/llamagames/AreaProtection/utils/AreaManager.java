@@ -75,6 +75,7 @@ public class AreaManager {
     }
 
     public static void saveArea(Area area) {
+        AreaProtection.areaDB.set("areas." + area.getName() + ".world", area.getWorld().getName());
         AreaProtection.areaDB.set("areas." + area.getName() + ".pos1x", area.getPos1().getX());
         AreaProtection.areaDB.set("areas." + area.getName() + ".pos1y", area.getPos1().getY());
         AreaProtection.areaDB.set("areas." + area.getName() + ".pos1z", area.getPos1().getZ());
