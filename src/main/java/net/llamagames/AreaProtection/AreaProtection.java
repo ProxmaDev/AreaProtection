@@ -193,6 +193,11 @@ public class AreaProtection extends PluginBase {
         if (config.getBoolean("flags.god")) flags.add("god");
         if (config.getBoolean("flags.mob-spawn")) flags.add("mob-spawn");
         if (config.getBoolean("flags.explosion")) flags.add("explosion");
+        if (config.getBoolean("flags.drop-item")) flags.add("drop-item");
+    }
+
+    public boolean hasBypassPerms(Player player) {
+        return bypassPlayers.contains(player);
     }
 
     // API stuff

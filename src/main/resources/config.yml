@@ -8,3 +8,4 @@ flags:
   mob-spawn: true
   pvp: true
   god: true
+  drop-item: true

@@ -7,6 +7,7 @@ import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.entity.EntityExplodeEvent;
 import cn.nukkit.event.entity.EntitySpawnEvent;
+import cn.nukkit.event.player.PlayerDropItemEvent;
 import net.llamagames.AreaProtection.AreaProtection;
 import net.llamagames.AreaProtection.utils.Area;
 
@@ -41,6 +42,14 @@ public class EntityListener implements Listener {
             } else allowedBlock.add(block);
         });
         event.setBlockList(allowedBlock);
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onDrop(PlayerDropItemEvent event) {
+        Area area = plugin.getAreaByPos(event.getPlayer().getPosition());
+        if (area != null) {
+            if (!area.isAllowed("drop-item") && !plugin.hasBypassPerms(event.getPlayer())) event.setCancelled(true);
+        }
     }
 
 }
