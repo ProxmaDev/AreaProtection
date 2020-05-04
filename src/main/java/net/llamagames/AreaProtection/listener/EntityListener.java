@@ -5,6 +5,8 @@ import cn.nukkit.entity.mob.EntityMob;
 import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
+import cn.nukkit.event.block.ItemFrameDropItemEvent;
+import cn.nukkit.event.entity.EntityDamageByEntityEvent;
 import cn.nukkit.event.entity.EntityExplodeEvent;
 import cn.nukkit.event.entity.EntitySpawnEvent;
 import cn.nukkit.event.player.PlayerDropItemEvent;
@@ -49,6 +51,14 @@ public class EntityListener implements Listener {
         Area area = plugin.getAreaByPos(event.getPlayer().getPosition());
         if (area != null) {
             if (!area.isAllowed("drop-item") && !plugin.hasBypassPerms(event.getPlayer())) event.setCancelled(true);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onItemFrame(ItemFrameDropItemEvent event) {
+        Area area = plugin.getAreaByPos(event.getBlock().getLocation());
+        if (area != null) {
+            if (!area.isAllowed("interact") && !plugin.hasBypassPerms(event.getPlayer())) event.setCancelled(true);
         }
     }
 
