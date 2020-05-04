@@ -30,6 +30,7 @@ import cn.nukkit.command.CommandSender;
 import cn.nukkit.level.Level;
 import cn.nukkit.level.Position;
 import cn.nukkit.math.Vector3;
+import cn.nukkit.plugin.Plugin;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.Config;
 import net.llamagames.AreaProtection.commands.AreaProtectionCommand;
@@ -52,6 +53,8 @@ public class AreaProtection extends PluginBase {
     public static HashMap<Player, Integer> playersInPosMode = new HashMap<Player, Integer>();
     public static ArrayList<Area> areas = new ArrayList<>();
     public static ArrayList<Player> bypassPlayers = new ArrayList<>();
+
+    public static boolean useMobPlugin = false;
 
     public static HashMap<String, HashMap<Integer, String>> flagPending = new HashMap<>();
 
@@ -91,6 +94,8 @@ public class AreaProtection extends PluginBase {
             getServer().getPluginManager().disablePlugin(instance);
             return;
         }
+
+        if (getServer().getPluginManager().getPlugins().containsKey("MobPlugin")) useMobPlugin = true;
 
         loadAreas();
         Language.init();
