@@ -116,7 +116,7 @@ public class BlockListener implements Listener {
                     notify(event.getPlayer(), Language.get("no-interact"));
                 }
             }
-            if (!area.isAllowed("place")) {
+            if (!area.isAllowed("place") && event.getAction() != PlayerInteractEvent.Action.PHYSICAL) {
                 if (!hasBypassPerms(event.getPlayer())) {
                     if (event.getItem().getId() == ItemID.BUCKET) {
                         event.setCancelled(true);
